@@ -11,6 +11,20 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+//Home related routes
+Route::get(
+    '/', ['as' => 'home', function () {
+        return response()->view('home');
+    }]
+);
+
+// User related routes
+Route::get(
+    '/login',
+    ['uses' => 'UserController@login', 'as' => 'login']
+);
+
+Route::get(
+    '/user/new',
+    ['uses' => 'UserController@new', 'as' => 'user-new']
+);
