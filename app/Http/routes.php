@@ -18,13 +18,42 @@ Route::get(
     }]
 );
 
-// User related routes
+// Session related routes
 Route::get(
+    '/login', ['as' => 'login-index', function() {
+        return response()->view('login');
+    }]
+);
+
+Route::post(
     '/login',
-    ['uses' => 'UserController@login', 'as' => 'login']
+    ['uses' => 'SessionController@login', 'as' => 'login-action']
 );
 
 Route::get(
-    '/user/new',
-    ['uses' => 'UserController@new', 'as' => 'user-new']
+    '/logout', ['as' => 'logout', function() {
+        Auth::logout();
+        return redirect()->route('home');
+    }]
+);
+
+// User related routes
+Route::get(
+    '/user/new', ['as' => 'user-new', function() {
+        return response()->view('newUser');
+    }]
+);
+
+Route::post(
+    '/user/create',
+    ['uses' => 'UserController@newUser', 'as' => 'user-create', ]
+);
+
+Route::get(
+    '/vacationProperty/new',
+    [
+        'uses' => 'UserController@newUser',
+        'as' => 'vacation-property-new',
+        'middleware' => 'auth'
+    ]
 );

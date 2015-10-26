@@ -25,12 +25,12 @@
       <a class="navbar-brand" href="/">airtng</a>
       <ul class="navbar-nav navbar-right pull-right">
         @if (Auth::check())
-          <li><image src="asset('images/spock.png')"></li>
+          <li><image src="{{ asset('images/spock.png') }}"></li>
           <li><a href="{{ route('vacation-property-new') }}">New Vacation property</a></li>
           <li><a href="{{ route('logout') }}">Log Out</a></li>
         @else
           <li><a href="{{ route('user-new') }}">Sign Up</a></li>
-          <li><a href="{{ route('login') }}">Log In</a></li>
+          <li><a href="{{ route('login-index') }}">Log In</a></li>
         @endif
 
       </ul>
