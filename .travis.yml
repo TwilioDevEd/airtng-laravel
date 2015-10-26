@@ -1,0 +1,19 @@
+language: php
+php:
+- 5.6
+- 5.5
+install:
+- composer install
+env:
+  global:
+  - DB_HOST=localhost
+  - DB_DATABASE=workflow_automation
+  - DB_USERNAME=postgres
+  - APP_ENV=testing
+  - APP_KEY=rJhIZXkdo3FtwqdDJsC7OadHIVhnarEE
+  - TWILIO_ACCOUNT_SID=ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  - TWILIO_AUTH_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  - TWILIO_NUMBER=+15552737123
+before_script:
+  - psql -c 'create database workflow_automation;' -U postgres
+  - php artisan migrate
