@@ -46,7 +46,7 @@ Route::get(
 
 Route::post(
     '/user/create',
-    ['uses' => 'UserController@newUser', 'as' => 'user-create', ]
+    ['uses' => 'UserController@createNewUser', 'as' => 'user-create', ]
 );
 
 Route::get(

@@ -16,7 +16,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function newUser(Request $request)
+    public function createNewUser(Request $request)
     {
         $this->validate(
             $request, [
