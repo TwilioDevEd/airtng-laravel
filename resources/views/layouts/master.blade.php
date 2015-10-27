@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    {!! csrf_field() !!}
     <title>@yield('title') - Workflow Automation</title>
 
     <!-- CSS -->
@@ -26,7 +27,7 @@
       <ul class="navbar-nav navbar-right pull-right">
         @if (Auth::check())
           <li><image src="{{ asset('images/spock.png') }}"></li>
-          <li><a href="{{ route('vacation-property-new') }}">New Vacation property</a></li>
+          <li><a href="{{ route('property-new') }}">New Vacation property</a></li>
           <li><a href="{{ route('logout') }}">Log Out</a></li>
         @else
           <li><a href="{{ route('user-new') }}">Sign Up</a></li>

@@ -23,6 +23,10 @@ class CreateReservationsTable extends Migration
             $table->foreign('vacation_property_id')
                   ->references('id')->on('vacation_properties')
                   ->onDelete('cascade');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')
+                  ->references('id')->on('users')
+                  ->onDelete('cascade');
 
             $table->timestamps();
         });

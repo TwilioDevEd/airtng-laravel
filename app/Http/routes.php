@@ -20,6 +20,12 @@ Route::get(
 
 // Session related routes
 Route::get(
+    '/auth/login', ['as' => 'login-index', function() {
+        return response()->view('login');
+    }]
+);
+
+Route::get(
     '/login', ['as' => 'login-index', function() {
         return response()->view('login');
     }]
@@ -49,11 +55,57 @@ Route::post(
     ['uses' => 'UserController@createNewUser', 'as' => 'user-create', ]
 );
 
+// Vacation Property related routes
 Route::get(
-    '/vacationProperty/new',
+    '/property/new',
     [
-        'uses' => 'UserController@newUser',
-        'as' => 'vacation-property-new',
-        'middleware' => 'auth'
+        'as' => 'property-new',
+        'middleware' => 'auth',
+        function() {
+            return response()->view('property.newProperty');
+        }
     ]
+);
+
+Route::get(
+    '/properties',
+    [
+        'as' => 'property-index',
+        'middleware' => 'auth',
+        'uses' => 'VacationPropertyController@index'
+    ]
+);
+
+Route::get(
+    '/property/{id}',
+    [
+        'as' => 'property-show',
+        'middleware' => 'auth',
+        'uses' => 'VacationPropertyController@show'
+    ]
+);
+
+Route::get(
+    '/property/{id}/edit',
+    [
+        'as' => 'property-edit',
+        'middleware' => 'auth',
+        'uses' => 'VacationPropertyController@editForm'
+    ]
+);
+
+Route::post(
+    '/property/edit/{id}',
+    ['uses' => 'VacationPropertyController@editProperty', 'as' => 'property-edit-action', ]
+);
+
+Route::post(
+    '/property/create',
+    ['uses' => 'VacationPropertyController@createNewProperty', 'as' => 'property-create', ]
+);
+
+// Reservation related routes
+Route::post(
+    '/reservation/create',
+    ['uses' => 'ReservationController@createNew', 'as' => 'reservation-create', ]
 );

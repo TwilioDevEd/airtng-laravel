@@ -36,4 +36,12 @@ class User extends Model implements AuthenticatableContract,
      * @var array
      */
     protected $hidden = ['password'];
+
+    /**
+     * Get vacation properties for the user.
+     */
+    public function properties()
+    {
+        return $this->hasMany('App\VacationProperty');
+    }
 }
