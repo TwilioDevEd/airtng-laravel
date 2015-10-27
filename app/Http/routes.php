@@ -58,54 +58,52 @@ Route::post(
 // Vacation Property related routes
 Route::get(
     '/property/new',
-    [
-        'as' => 'property-new',
-        'middleware' => 'auth',
-        function() {
-            return response()->view('property.newProperty');
-        }
-    ]
+    ['as' => 'property-new',
+     'middleware' => 'auth',
+     function() {
+         return response()->view('property.newProperty');
+     }]
 );
 
 Route::get(
     '/properties',
-    [
-        'as' => 'property-index',
-        'middleware' => 'auth',
-        'uses' => 'VacationPropertyController@index'
-    ]
+    ['as' => 'property-index',
+     'middleware' => 'auth',
+     'uses' => 'VacationPropertyController@index']
 );
 
 Route::get(
     '/property/{id}',
-    [
-        'as' => 'property-show',
-        'middleware' => 'auth',
-        'uses' => 'VacationPropertyController@show'
-    ]
+    ['as' => 'property-show',
+     'middleware' => 'auth',
+     'uses' => 'VacationPropertyController@show']
 );
 
 Route::get(
     '/property/{id}/edit',
-    [
-        'as' => 'property-edit',
-        'middleware' => 'auth',
-        'uses' => 'VacationPropertyController@editForm'
-    ]
+    ['as' => 'property-edit',
+     'middleware' => 'auth',
+     'uses' => 'VacationPropertyController@editForm']
 );
 
 Route::post(
     '/property/edit/{id}',
-    ['uses' => 'VacationPropertyController@editProperty', 'as' => 'property-edit-action', ]
+    ['uses' => 'VacationPropertyController@editProperty',
+     'middleware' => 'auth',
+     'as' => 'property-edit-action']
 );
 
 Route::post(
     '/property/create',
-    ['uses' => 'VacationPropertyController@createNewProperty', 'as' => 'property-create', ]
+    ['uses' => 'VacationPropertyController@createNewProperty',
+     'middleware' => 'auth',
+     'as' => 'property-create']
 );
 
 // Reservation related routes
 Route::post(
-    '/reservation/create',
-    ['uses' => 'ReservationController@createNew', 'as' => 'reservation-create', ]
+    '/property/{id}/reservation/create',
+    ['uses' => 'ReservationController@create',
+     'as' => 'reservation-create',
+     'middleware' => 'auth']
 );

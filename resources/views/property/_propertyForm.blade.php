@@ -13,7 +13,13 @@
           {!! Form::text('image_url', null, ['class' => 'form-control']) !!}
       </div>
       <div class="form-group">
-          <button type="submit" class="btn btn-primary">Create Property</button>
+          <button type="submit" class="btn btn-primary">
+              @if(isset($property))
+                Save changes
+              @else
+                Create Property
+              @endif
+          </button>
       </div>
   {!! Form::close() !!}
 </div>

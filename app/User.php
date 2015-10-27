@@ -44,4 +44,14 @@ class User extends Model implements AuthenticatableContract,
     {
         return $this->hasMany('App\VacationProperty');
     }
+
+    public function reservations()
+    {
+        return $this->hasMany('App\Reservation');
+    }
+
+    public function fullNumber()
+    {
+        return '+' . $this->country_code . $this->phone_number;
+    }
 }

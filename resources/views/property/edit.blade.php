@@ -12,7 +12,7 @@
 
 @section('content')
 <div class="container">
-  <h1>Edit Vacation Property</h1>
+  <h1>Editing Vacation Property</h1>
   @include('property._propertyForm')
 
   <a href="{{ route('property-index') }}">Back to properties</a></li>

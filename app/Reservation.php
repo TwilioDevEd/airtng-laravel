@@ -11,20 +11,28 @@ class Reservation extends Model
      *
      * @var string
      */
-    protected $table = 'vacation_properties';
+    protected $table = 'reservations';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['description', 'image_url'];
+    protected $fillable = ['message'];
 
     /**
      * Get the property for this reservation.
      */
     public function property()
     {
-        return $this->belongsTo('App\VacationProperty');
+        return $this->belongsTo('App\VacationProperty', 'vacation_property_id');
+    }
+
+    /**
+     * Get the user for this reservation.
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\User');
     }
 }

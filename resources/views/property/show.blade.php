@@ -14,6 +14,7 @@
         <img src="{{ $property->image_url }}" />
     </div>
     <div class="container">
+        @include('_messages')
         <h1 >{{ $property->description }}</h1><span><a href="{{ route('property-edit', ['id' => $property->id]) }}">Edit</a></span>
         <hr>
         <div class="panel panel-default">
@@ -21,7 +22,7 @@
                 <h3 class="panel-title">Make a Reservation</h3>
             </div>
             <div class="panel-body">
-                {!! Form::open(['url' => route('reservation-create')]) !!}
+                {!! Form::open(['url' => route('reservation-create', ['id' => $property->id])]) !!}
                     <div class="form-group">
                         {!! Form::label('message') !!}
                         {!! Form::text('message', '', ['class' => 'form-control', 'placeholder' => 'Hello! I am hoping to stay in your intergalactic suite...']) !!}

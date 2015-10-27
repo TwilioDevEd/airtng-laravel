@@ -14,8 +14,6 @@ class CreateReservationsTable extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('phone_number');
             $table->integer('status')
                   ->default(0);
             $table->text('message');
