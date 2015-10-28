@@ -28,7 +28,8 @@ class ReservationController extends Controller
         );
         $property = VacationProperty::find($id);
         $reservation = new Reservation($request->all());
-        $reservation->user()->associate($user);
+        $reservation->respond_phone_number = $user->fullNumber();
+        $reservation->user()->associate($property->user);
 
         $property->reservations()->save($reservation);
 
@@ -68,13 +69,21 @@ class ReservationController extends Controller
             $smsResponse = 'Sorry, it looks like you don\'t have any reservations to respond to.';
         }
 
-        return response($this->respond($smsResponse))->header('Content-Type', 'application/xml');
+        return response($this->respond($smsResponse, $reservation))->header('Content-Type', 'application/xml');
     }
 
-    private function respond($smsResponse)
+    private function respond($smsResponse, $reservation)
     {
         $response = new TwilioTwiml;
         $response->message($smsResponse);
+
+        if (!is_null($reservation))
+        {
+            $response->message(
+                'Your reservation has been ' . $reservation->status . '.',
+                ['to' => $reservation->respond_phone_number]
+            );
+        }
         return $response;
     }
 

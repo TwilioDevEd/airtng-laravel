@@ -77,8 +77,8 @@ class ReservationControllerTest extends TestCase
         // Given
         $this->startSession();
         $userData = [
-            'name' => 'Captain Kirk',
-            'email' => 'jkirk@enterprise.space',
+            'name' => 'Captain Kirk host',
+            'email' => 'jkirkh@enterprise.space',
             'password' => 'strongpassword',
             'country_code' => '1',
             'phone_number' => '5558180101'
@@ -86,6 +86,17 @@ class ReservationControllerTest extends TestCase
 
         $newUser = new User($userData);
         $newUser->save();
+
+        $userData2 = [
+            'name' => 'Captain Kirk rent',
+            'email' => 'jkirkr@enterprise.space',
+            'password' => 'strongpassword',
+            'country_code' => '1',
+            'phone_number' => '5558180102'
+        ];
+
+        $newUser2 = new User($userData2);
+        $newUser2->save();
 
         $propertyData = [
             'description' => 'Some description',
@@ -99,6 +110,7 @@ class ReservationControllerTest extends TestCase
         ];
 
         $reservation = new Reservation($reservationData);
+        $reservation->respond_phone_number = $newUser2->fullNumber();
         $reservation->user()->associate($newUser);
         $newProperty->reservations()->save($reservation);
         $reservation = $reservation->fresh();
@@ -115,9 +127,13 @@ class ReservationControllerTest extends TestCase
 
         $reservation = $reservation->fresh();
         $this->assertEquals('confirmed', $reservation->status);
-        $this->assertNotNull($messageDocument->Message);
-        $this->assertNotEmpty($messageDocument->Message);
-        $this->assertEquals(strval($messageDocument->Message), 'You have successfully confirmed the reservation.');
+        $this->assertNotNull($messageDocument->children()[0]);
+        $this->assertNotEmpty($messageDocument->children()[0]);
+        $this->assertEquals(strval($messageDocument->children()[0]), 'You have successfully confirmed the reservation.');
+        $this->assertNotNull($messageDocument->children()[1]);
+        $this->assertNotEmpty($messageDocument->children()[1]);
+        $this->assertEquals(strval($messageDocument->children()[1]), 'Your reservation has been confirmed.');
+        $this->assertEquals(strval($messageDocument->children()[1]->attributes()[0]), '+15558180102');
     }
 
     public function testAcceptRejectReject()
@@ -135,6 +151,17 @@ class ReservationControllerTest extends TestCase
         $newUser = new User($userData);
         $newUser->save();
 
+        $userData2 = [
+            'name' => 'Captain Kirk rent',
+            'email' => 'jkirkr@enterprise.space',
+            'password' => 'strongpassword',
+            'country_code' => '1',
+            'phone_number' => '5558180102'
+        ];
+
+        $newUser2 = new User($userData2);
+        $newUser2->save();
+
         $propertyData = [
             'description' => 'Some description',
             'image_url' => 'http://www.someimage.com'
@@ -147,6 +174,7 @@ class ReservationControllerTest extends TestCase
         ];
 
         $reservation = new Reservation($reservationData);
+        $reservation->respond_phone_number = $newUser2->fullNumber();
         $reservation->user()->associate($newUser);
         $newProperty->reservations()->save($reservation);
         $reservation = $reservation->fresh();
@@ -163,9 +191,13 @@ class ReservationControllerTest extends TestCase
 
         $reservation = $reservation->fresh();
         $this->assertEquals('rejected', $reservation->status);
-        $this->assertNotNull($messageDocument->Message);
-        $this->assertNotEmpty($messageDocument->Message);
-        $this->assertEquals(strval($messageDocument->Message), 'You have successfully rejected the reservation.');
+        $this->assertNotNull($messageDocument->children()[0]);
+        $this->assertNotEmpty($messageDocument->children()[0]);
+        $this->assertEquals(strval($messageDocument->children()[0]), 'You have successfully rejected the reservation.');
+        $this->assertNotNull($messageDocument->children()[1]);
+        $this->assertNotEmpty($messageDocument->children()[1]);
+        $this->assertEquals(strval($messageDocument->children()[1]), 'Your reservation has been rejected.');
+        $this->assertEquals(strval($messageDocument->children()[1]->attributes()[0]), '+15558180102');
     }
 
     public function testAcceptRejectNoPending()
@@ -183,6 +215,17 @@ class ReservationControllerTest extends TestCase
         $newUser = new User($userData);
         $newUser->save();
 
+        $userData2 = [
+            'name' => 'Captain Kirk rent',
+            'email' => 'jkirkr@enterprise.space',
+            'password' => 'strongpassword',
+            'country_code' => '1',
+            'phone_number' => '5558180102'
+        ];
+
+        $newUser2 = new User($userData2);
+        $newUser2->save();
+
         $propertyData = [
             'description' => 'Some description',
             'image_url' => 'http://www.someimage.com'
@@ -196,6 +239,7 @@ class ReservationControllerTest extends TestCase
 
         $reservation = new Reservation($reservationData);
         $reservation->status = 'confirmed';
+        $reservation->respond_phone_number = $newUser2->fullNumber();
         $reservation->user()->associate($newUser);
         $newProperty->reservations()->save($reservation);
         $reservation = $reservation->fresh();
@@ -212,8 +256,8 @@ class ReservationControllerTest extends TestCase
 
         $reservation = $reservation->fresh();
         $this->assertEquals('confirmed', $reservation->status);
-        $this->assertNotNull($messageDocument->Message);
-        $this->assertNotEmpty($messageDocument->Message);
-        $this->assertEquals(strval($messageDocument->Message), 'Sorry, it looks like you don\'t have any reservations to respond to.');
+        $this->assertNotNull($messageDocument->children()[0]);
+        $this->assertNotEmpty($messageDocument->children()[0]);
+        $this->assertEquals(strval($messageDocument->children()[0]), 'Sorry, it looks like you don\'t have any reservations to respond to.');
     }
 }

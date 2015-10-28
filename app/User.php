@@ -45,6 +45,11 @@ class User extends Model implements AuthenticatableContract,
         return $this->hasMany('App\VacationProperty');
     }
 
+    public function propertyReservations()
+    {
+        return $this->hasManyThrough('App\Reservation', 'App\VacationProperty', 'user_id', 'vacation_property_id');
+    }
+
     public function reservations()
     {
         return $this->hasMany('App\Reservation');
@@ -52,7 +57,7 @@ class User extends Model implements AuthenticatableContract,
 
     public function pendingReservations()
     {
-        return $this->reservations()->where('status', '=', 'pending');
+        return $this->propertyReservations()->where('status', '=', 'pending');
     }
 
     public function fullNumber()
