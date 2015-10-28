@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Sign Up
+    Log in
 @endsection
 
 @section('nav_bg')

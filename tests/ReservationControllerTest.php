@@ -71,4 +71,149 @@ class ReservationControllerTest extends TestCase
             "Sending your reservation request now."
         );
     }
+
+    public function testAcceptRejectConfirm()
+    {
+        // Given
+        $this->startSession();
+        $userData = [
+            'name' => 'Captain Kirk',
+            'email' => 'jkirk@enterprise.space',
+            'password' => 'strongpassword',
+            'country_code' => '1',
+            'phone_number' => '5558180101'
+        ];
+
+        $newUser = new User($userData);
+        $newUser->save();
+
+        $propertyData = [
+            'description' => 'Some description',
+            'image_url' => 'http://www.someimage.com'
+        ];
+        $newProperty = new VacationProperty($propertyData);
+        $newUser->properties()->save($newProperty);
+
+        $reservationData = [
+            'message' => 'Reservation message'
+        ];
+
+        $reservation = new Reservation($reservationData);
+        $reservation->user()->associate($newUser);
+        $newProperty->reservations()->save($reservation);
+        $reservation = $reservation->fresh();
+        $this->assertEquals('pending', $reservation->status);
+
+        // When
+        $response = $this->call(
+            'POST',
+            route('reservation-incoming'),
+            ['From' => '+15558180101',
+             'Body' => 'yes']
+        );
+        $messageDocument = new SimpleXMLElement($response->getContent());
+
+        $reservation = $reservation->fresh();
+        $this->assertEquals('confirmed', $reservation->status);
+        $this->assertNotNull($messageDocument->Message);
+        $this->assertNotEmpty($messageDocument->Message);
+        $this->assertEquals(strval($messageDocument->Message), 'You have successfully confirmed the reservation.');
+    }
+
+    public function testAcceptRejectReject()
+    {
+        // Given
+        $this->startSession();
+        $userData = [
+            'name' => 'Captain Kirk',
+            'email' => 'jkirk@enterprise.space',
+            'password' => 'strongpassword',
+            'country_code' => '1',
+            'phone_number' => '5558180101'
+        ];
+
+        $newUser = new User($userData);
+        $newUser->save();
+
+        $propertyData = [
+            'description' => 'Some description',
+            'image_url' => 'http://www.someimage.com'
+        ];
+        $newProperty = new VacationProperty($propertyData);
+        $newUser->properties()->save($newProperty);
+
+        $reservationData = [
+            'message' => 'Reservation message'
+        ];
+
+        $reservation = new Reservation($reservationData);
+        $reservation->user()->associate($newUser);
+        $newProperty->reservations()->save($reservation);
+        $reservation = $reservation->fresh();
+        $this->assertEquals('pending', $reservation->status);
+
+        // When
+        $response = $this->call(
+            'POST',
+            route('reservation-incoming'),
+            ['From' => '+15558180101',
+             'Body' => 'any other string']
+        );
+        $messageDocument = new SimpleXMLElement($response->getContent());
+
+        $reservation = $reservation->fresh();
+        $this->assertEquals('rejected', $reservation->status);
+        $this->assertNotNull($messageDocument->Message);
+        $this->assertNotEmpty($messageDocument->Message);
+        $this->assertEquals(strval($messageDocument->Message), 'You have successfully rejected the reservation.');
+    }
+
+    public function testAcceptRejectNoPending()
+    {
+        // Given
+        $this->startSession();
+        $userData = [
+            'name' => 'Captain Kirk',
+            'email' => 'jkirk@enterprise.space',
+            'password' => 'strongpassword',
+            'country_code' => '1',
+            'phone_number' => '5558180101'
+        ];
+
+        $newUser = new User($userData);
+        $newUser->save();
+
+        $propertyData = [
+            'description' => 'Some description',
+            'image_url' => 'http://www.someimage.com'
+        ];
+        $newProperty = new VacationProperty($propertyData);
+        $newUser->properties()->save($newProperty);
+
+        $reservationData = [
+            'message' => 'Reservation message'
+        ];
+
+        $reservation = new Reservation($reservationData);
+        $reservation->status = 'confirmed';
+        $reservation->user()->associate($newUser);
+        $newProperty->reservations()->save($reservation);
+        $reservation = $reservation->fresh();
+        $this->assertEquals('confirmed', $reservation->status);
+
+        // When
+        $response = $this->call(
+            'POST',
+            route('reservation-incoming'),
+            ['From' => '+15558180101',
+             'Body' => 'yes']
+        );
+        $messageDocument = new SimpleXMLElement($response->getContent());
+
+        $reservation = $reservation->fresh();
+        $this->assertEquals('confirmed', $reservation->status);
+        $this->assertNotNull($messageDocument->Message);
+        $this->assertNotEmpty($messageDocument->Message);
+        $this->assertEquals(strval($messageDocument->Message), 'Sorry, it looks like you don\'t have any reservations to respond to.');
+    }
 }

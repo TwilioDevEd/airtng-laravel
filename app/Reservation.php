@@ -35,4 +35,16 @@ class Reservation extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    public function confirm()
+    {
+        $this->status = 'confirmed';
+        $this->save();
+    }
+
+    public function reject()
+    {
+        $this->status = 'rejected';
+        $this->save();
+    }
 }

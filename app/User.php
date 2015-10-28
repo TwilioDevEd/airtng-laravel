@@ -50,6 +50,11 @@ class User extends Model implements AuthenticatableContract,
         return $this->hasMany('App\Reservation');
     }
 
+    public function pendingReservations()
+    {
+        return $this->reservations()->where('status', '=', 'pending');
+    }
+
     public function fullNumber()
     {
         return '+' . $this->country_code . $this->phone_number;

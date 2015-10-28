@@ -5,8 +5,11 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\Authenticatable;
 use App\Reservation;
+use App\User;
 use App\VacationProperty;
+use DB;
 use Services_Twilio as TwilioRestClient;
+use Services_Twilio_Twiml as TwilioTwiml;
 
 class ReservationController extends Controller
 {
@@ -38,6 +41,43 @@ class ReservationController extends Controller
         return redirect()->route('property-show', ['id' => $property->id]);
     }
 
+    public function acceptReject(Request $request)
+    {
+        $hostNumber = $request->input('From');
+        $smsInput = strtolower($request->input('Body'));
+        $host = User::where(DB::raw("CONCAT('+',country_code::text, phone_number::text)"), 'LIKE', "%".$hostNumber."%")
+                    ->get()
+                    ->first();
+        $reservation = $host->pendingReservations()->first();
+        $smsResponse = null;
+        if (!is_null($reservation))
+        {
+            if ($smsInput === 'yes' || $smsInput === 'accept')
+            {
+                $reservation->confirm();
+            }
+            else
+            {
+                $reservation->reject();
+            }
+
+            $smsResponse = 'You have successfully ' . $reservation->status . ' the reservation.';
+        }
+        else
+        {
+            $smsResponse = 'Sorry, it looks like you don\'t have any reservations to respond to.';
+        }
+
+        return response($this->respond($smsResponse))->header('Content-Type', 'application/xml');
+    }
+
+    private function respond($smsResponse)
+    {
+        $response = new TwilioTwiml;
+        $response->message($smsResponse);
+        return $response;
+    }
+
     private function notifyHost($client, $reservation)
     {
         $host = $reservation->property->user;
@@ -51,8 +91,7 @@ class ReservationController extends Controller
                 $reservation->message
             );
         } catch (Exception $e) {
-            return 'Error: ' . $e->getMessage();
-            exit;
+            Log::error($e->getMessage());
         }
     }
 }

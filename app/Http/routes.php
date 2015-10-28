@@ -107,3 +107,9 @@ Route::post(
      'as' => 'reservation-create',
      'middleware' => 'auth']
 );
+
+Route::post(
+    '/reservation/incoming',
+    ['uses' => 'ReservationController@acceptReject',
+     'as' => 'reservation-incoming']
+);

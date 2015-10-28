@@ -14,8 +14,8 @@ class CreateReservationsTable extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('status')
-                  ->default(0);
+            $table->string('status')
+                  ->default('pending');
             $table->text('message');
             $table->integer('vacation_property_id')->unsigned();
             $table->foreign('vacation_property_id')
