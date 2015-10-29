@@ -53,7 +53,7 @@ class ReservationController extends Controller
         $smsResponse = null;
         if (!is_null($reservation))
         {
-            if ($smsInput === 'yes' || $smsInput === 'accept')
+            if (strpos($smsInput, 'yes') !== false || strpos($smsInput, 'accept') !== false)
             {
                 $reservation->confirm();
             }
