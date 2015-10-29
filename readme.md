@@ -11,6 +11,14 @@ Learn how to automate your workflow using Twilio's REST API and Twilio SMS. This
    ```bash
    $ composer install
    ```
+1. The application uses PostgreSQL as the persistence layer. If you
+  don't have it already, you should install it. The easiest way is by
+  using [Postgres.app](http://postgresapp.com/).
+1. Create a database.
+
+  ```bash
+  $ createdb browser_calls
+  ```
 1. Copy the sample configuration file and edit it to match your configuration.
 
    ```bash
@@ -27,6 +35,16 @@ Learn how to automate your workflow using Twilio's REST API and Twilio SMS. This
    ```bash
    $ php artisan key:generate
    ```
+1. Run the migrations:
+
+  ```bash
+  $ php artisan migrate
+  ```
+1. Load the seed data:
+
+  ```bash
+  $ php artisan db:seed
+  ```
 1. Expose the application to the wider Internet using [ngrok](https://ngrok.com/)
 
    ```bash
