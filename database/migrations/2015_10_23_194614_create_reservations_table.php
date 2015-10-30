@@ -16,7 +16,7 @@ class CreateReservationsTable extends Migration
             $table->increments('id');
             $table->string('status')
                   ->default('pending');
-            $table->string('respond_phone_number');
+            $table->string('twilio_number')->nullable();
             $table->text('message');
             $table->integer('vacation_property_id')->unsigned();
             $table->foreign('vacation_property_id')

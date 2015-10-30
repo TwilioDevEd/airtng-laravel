@@ -28,8 +28,7 @@ class ReservationController extends Controller
         );
         $property = VacationProperty::find($id);
         $reservation = new Reservation($request->all());
-        $reservation->respond_phone_number = $user->fullNumber();
-        $reservation->user()->associate($property->user);
+        $reservation->user()->associate($user);
 
         $property->reservations()->save($reservation);
 
