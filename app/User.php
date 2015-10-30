@@ -64,4 +64,9 @@ class User extends Model implements AuthenticatableContract,
     {
         return '+' . $this->country_code . $this->phone_number;
     }
+
+    public function areaCode()
+    {
+        return substr($this->phone_number, 0, 3);
+    }
 }

@@ -25,8 +25,8 @@ class ReservationControllerTest extends TestCase
         $newUser->save();
 
         $userData2 = [
-            'name' => 'Captain Kirk rent',
-            'email' => 'jkirkr@enterprise.space',
+            'name' => 'Captain Kirk guest',
+            'email' => 'jkirkg@enterprise.space',
             'password' => 'strongpassword',
             'country_code' => '1',
             'phone_number' => '5558180102'
@@ -71,9 +71,12 @@ class ReservationControllerTest extends TestCase
         );
 
         // Then
+        $reservationFromHost = $newUser->pendingReservations()->first()->fresh();
         $this->assertCount(1, Reservation::all());
         $reservation = Reservation::first();
-        $this->assertEquals();
+        $this->assertEquals('Captain Kirk guest', $reservation->user->name);
+        $this->assertEquals('Some reservation message', $newUser->pendingReservations()->first()->message);
+        $this->assertEquals($newUser2->id, $reservationFromHost->user->id);
         $this->assertEquals($reservation->message, 'Some reservation message');
         $this->assertRedirectedToRoute('property-show', ['id' => $newProperty->id]);
         $this->assertSessionHas('status');
@@ -83,7 +86,7 @@ class ReservationControllerTest extends TestCase
             "Sending your reservation request now."
         );
     }
-    /*
+
     public function testAcceptRejectConfirm()
     {
         // Given
@@ -100,8 +103,8 @@ class ReservationControllerTest extends TestCase
         $newUser->save();
 
         $userData2 = [
-            'name' => 'Captain Kirk rent',
-            'email' => 'jkirkr@enterprise.space',
+            'name' => 'Captain Kirk guest',
+            'email' => 'jkirkg@enterprise.space',
             'password' => 'strongpassword',
             'country_code' => '1',
             'phone_number' => '5558180102'
@@ -122,8 +125,7 @@ class ReservationControllerTest extends TestCase
         ];
 
         $reservation = new Reservation($reservationData);
-        $reservation->respond_phone_number = $newUser2->fullNumber();
-        $reservation->user()->associate($newUser);
+        $reservation->user()->associate($newUser2);
         $newProperty->reservations()->save($reservation);
         $reservation = $reservation->fresh();
         $this->assertEquals('pending', $reservation->status);
@@ -135,6 +137,7 @@ class ReservationControllerTest extends TestCase
             ['From' => '+15558180101',
              'Body' => 'yes']
         );
+        //echo $response;
         $messageDocument = new SimpleXMLElement($response->getContent());
 
         $reservation = $reservation->fresh();
@@ -153,8 +156,8 @@ class ReservationControllerTest extends TestCase
         // Given
         $this->startSession();
         $userData = [
-            'name' => 'Captain Kirk',
-            'email' => 'jkirk@enterprise.space',
+            'name' => 'Captain Kirk host',
+            'email' => 'jkirkh@enterprise.space',
             'password' => 'strongpassword',
             'country_code' => '1',
             'phone_number' => '5558180101'
@@ -164,8 +167,8 @@ class ReservationControllerTest extends TestCase
         $newUser->save();
 
         $userData2 = [
-            'name' => 'Captain Kirk rent',
-            'email' => 'jkirkr@enterprise.space',
+            'name' => 'Captain Kirk guest',
+            'email' => 'jkirkg@enterprise.space',
             'password' => 'strongpassword',
             'country_code' => '1',
             'phone_number' => '5558180102'
@@ -186,8 +189,7 @@ class ReservationControllerTest extends TestCase
         ];
 
         $reservation = new Reservation($reservationData);
-        $reservation->respond_phone_number = $newUser2->fullNumber();
-        $reservation->user()->associate($newUser);
+        $reservation->user()->associate($newUser2);
         $newProperty->reservations()->save($reservation);
         $reservation = $reservation->fresh();
         $this->assertEquals('pending', $reservation->status);
@@ -199,6 +201,7 @@ class ReservationControllerTest extends TestCase
             ['From' => '+15558180101',
              'Body' => 'any other string']
         );
+        //echo $response;
         $messageDocument = new SimpleXMLElement($response->getContent());
 
         $reservation = $reservation->fresh();
@@ -217,8 +220,8 @@ class ReservationControllerTest extends TestCase
         // Given
         $this->startSession();
         $userData = [
-            'name' => 'Captain Kirk',
-            'email' => 'jkirk@enterprise.space',
+            'name' => 'Captain Kirk host',
+            'email' => 'jkirkh@enterprise.space',
             'password' => 'strongpassword',
             'country_code' => '1',
             'phone_number' => '5558180101'
@@ -228,8 +231,8 @@ class ReservationControllerTest extends TestCase
         $newUser->save();
 
         $userData2 = [
-            'name' => 'Captain Kirk rent',
-            'email' => 'jkirkr@enterprise.space',
+            'name' => 'Captain Kirk guest',
+            'email' => 'jkirkg@enterprise.space',
             'password' => 'strongpassword',
             'country_code' => '1',
             'phone_number' => '5558180102'
@@ -251,8 +254,7 @@ class ReservationControllerTest extends TestCase
 
         $reservation = new Reservation($reservationData);
         $reservation->status = 'confirmed';
-        $reservation->respond_phone_number = $newUser2->fullNumber();
-        $reservation->user()->associate($newUser);
+        $reservation->user()->associate($newUser2);
         $newProperty->reservations()->save($reservation);
         $reservation = $reservation->fresh();
         $this->assertEquals('confirmed', $reservation->status);
@@ -272,5 +274,4 @@ class ReservationControllerTest extends TestCase
         $this->assertNotEmpty(strval($messageDocument->Message[0]));
         $this->assertEquals(strval($messageDocument->Message[0]), 'Sorry, it looks like you don\'t have any reservations to respond to.');
     }
-    */
 }

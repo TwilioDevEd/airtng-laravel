@@ -36,15 +36,17 @@ class Reservation extends Model
         return $this->belongsTo('App\User', 'user_id');
     }
 
-    public function confirm()
+    public function confirm($twilioNumber)
     {
         $this->status = 'confirmed';
+        $this->twilio_number = $twilioNumber;
         $this->save();
     }
 
-    public function reject()
+    public function reject($twilioNumber)
     {
         $this->status = 'rejected';
+        $this->twilio_number = $twilioNumber;
         $this->save();
     }
 }

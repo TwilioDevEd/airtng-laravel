@@ -28,6 +28,9 @@ class ReservationController extends Controller
         );
         $property = VacationProperty::find($id);
         $reservation = new Reservation($request->all());
+
+        $twilioNumber = $this->getNewTwilioNumber($client, $property->user);
+
         $reservation->user()->associate($user);
 
         $property->reservations()->save($reservation);
@@ -41,7 +44,7 @@ class ReservationController extends Controller
         return redirect()->route('property-show', ['id' => $property->id]);
     }
 
-    public function acceptReject(Request $request)
+    public function acceptReject(TwilioRestClient $client, Request $request)
     {
         $hostNumber = $request->input('From');
         $smsInput = strtolower($request->input('Body'));
@@ -52,13 +55,15 @@ class ReservationController extends Controller
         $smsResponse = null;
         if (!is_null($reservation))
         {
+            $reservation = $reservation->fresh();
+
             if (strpos($smsInput, 'yes') !== false || strpos($smsInput, 'accept') !== false)
             {
-                $reservation->confirm();
+                $reservation->confirm($this->getNewTwilioNumber($client, $host));
             }
             else
             {
-                $reservation->reject();
+                $reservation->reject($this->getNewTwilioNumber($client, $host));
             }
 
             $smsResponse = 'You have successfully ' . $reservation->status . ' the reservation.';
@@ -80,7 +85,7 @@ class ReservationController extends Controller
         {
             $response->message(
                 'Your reservation has been ' . $reservation->status . '.',
-                ['to' => $reservation->respond_phone_number]
+                ['to' => $reservation->user->fullNumber()]
             );
         }
         return $response;
@@ -100,6 +105,38 @@ class ReservationController extends Controller
             );
         } catch (Exception $e) {
             Log::error($e->getMessage());
+        }
+    }
+
+    private function getNewTwilioNumber($client, $host)
+    {
+        $numbers = $client->account->available_phone_numbers->getList('US', 'Local', array(
+            "AreaCode" => $host->areaCode(),
+            "VoiceEnabled" => "true",
+            "SmsEnabled" => "true"
+        ));
+        if (empty($numbers))
+        {
+            $numbers = $client->account->available_phone_numbers->getList('US', 'Local', array(
+                "VoiceEnabled" => "true",
+                "SmsEnabled" => "true"
+            ));
+        }
+        $twilioNumber = $numbers[0];
+
+        $numberSid = $client->account->incoming_phone_numbers->create(array(
+            "PhoneNumber" => "+15105647903",
+            "SmsApplicationSid" => config('services.twilio')['applicationSid'],
+            "VoiceApplicationSid" => config('services.twilio')['applicationSid']
+        ));
+
+        if ($numberSid)
+        {
+            return $twilioNumber;
+        }
+        else
+        {
+            return 0;
         }
     }
 }
