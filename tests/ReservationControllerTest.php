@@ -127,13 +127,13 @@ class ReservationControllerTest extends TestCase
 
         $reservation = $reservation->fresh();
         $this->assertEquals('confirmed', $reservation->status);
-        $this->assertNotNull($messageDocument->children()[0]);
-        $this->assertNotEmpty($messageDocument->children()[0]);
-        $this->assertEquals(strval($messageDocument->children()[0]), 'You have successfully confirmed the reservation.');
-        $this->assertNotNull($messageDocument->children()[1]);
-        $this->assertNotEmpty($messageDocument->children()[1]);
-        $this->assertEquals(strval($messageDocument->children()[1]), 'Your reservation has been confirmed.');
-        $this->assertEquals(strval($messageDocument->children()[1]->attributes()[0]), '+15558180102');
+        $this->assertNotNull(strval($messageDocument->Message[0]));
+        $this->assertNotEmpty(strval($messageDocument->Message[0]));
+        $this->assertEquals(strval($messageDocument->Message[0]), 'You have successfully confirmed the reservation.');
+        $this->assertNotNull(strval($messageDocument->Message[1]));
+        $this->assertNotEmpty(strval($messageDocument->Message[1]));
+        $this->assertEquals(strval($messageDocument->Message[1]), 'Your reservation has been confirmed.');
+        $this->assertEquals(strval($messageDocument->Message[1]->attributes()[0]), '+15558180102');
     }
 
     public function testAcceptRejectReject()
@@ -191,13 +191,13 @@ class ReservationControllerTest extends TestCase
 
         $reservation = $reservation->fresh();
         $this->assertEquals('rejected', $reservation->status);
-        $this->assertNotNull($messageDocument->children()[0]);
-        $this->assertNotEmpty($messageDocument->children()[0]);
-        $this->assertEquals(strval($messageDocument->children()[0]), 'You have successfully rejected the reservation.');
-        $this->assertNotNull($messageDocument->children()[1]);
-        $this->assertNotEmpty($messageDocument->children()[1]);
-        $this->assertEquals(strval($messageDocument->children()[1]), 'Your reservation has been rejected.');
-        $this->assertEquals(strval($messageDocument->children()[1]->attributes()[0]), '+15558180102');
+        $this->assertNotNull(strval($messageDocument->Message[0]));
+        $this->assertNotEmpty(strval($messageDocument->Message[0]));
+        $this->assertEquals(strval($messageDocument->Message[0]), 'You have successfully rejected the reservation.');
+        $this->assertNotNull(strval($messageDocument->Message[1]));
+        $this->assertNotEmpty(strval($messageDocument->Message[1]));
+        $this->assertEquals(strval($messageDocument->Message[1]), 'Your reservation has been rejected.');
+        $this->assertEquals(strval($messageDocument->Message[1]->attributes()[0]), '+15558180102');
     }
 
     public function testAcceptRejectNoPending()
@@ -256,8 +256,8 @@ class ReservationControllerTest extends TestCase
 
         $reservation = $reservation->fresh();
         $this->assertEquals('confirmed', $reservation->status);
-        $this->assertNotNull($messageDocument->children()[0]);
-        $this->assertNotEmpty($messageDocument->children()[0]);
-        $this->assertEquals(strval($messageDocument->children()[0]), 'Sorry, it looks like you don\'t have any reservations to respond to.');
+        $this->assertNotNull(strval($messageDocument->Message[0]));
+        $this->assertNotEmpty(strval($messageDocument->Message[0]));
+        $this->assertEquals(strval($messageDocument->Message[0]), 'Sorry, it looks like you don\'t have any reservations to respond to.');
     }
 }
