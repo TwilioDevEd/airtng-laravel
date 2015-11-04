@@ -75,6 +75,69 @@ class ReservationController extends Controller
         return response($this->respond($smsResponse, $reservation))->header('Content-Type', 'application/xml');
     }
 
+    public function connectSms(Request $request)
+    {
+        $twilioNumber = $request->input('To');
+        $incomingNumber = $request->input('From');
+        $messageBody = $request->input('Body');
+
+        $reservation = Reservation::where('twilio_number', '=', $twilioNumber)->first();
+        $host = $reservation->property->user;
+        $guest = $reservation->user;
+
+        if ($incomingNumber === $host->fullNumber())
+        {
+            $outgoingNumber = $guest->fullNumber();
+        }
+        else
+        {
+            $outgoingNumber = $host->fullNumber();
+        }
+
+        return response($this->connectSmsResponse($messageBody, $outgoingNumber))->header('Content-Type', 'application/xml');
+    }
+
+    public function connectVoice(Request $request)
+    {
+        $twilioNumber = $request->input('To');
+        $incomingNumber = $request->input('From');
+
+        $reservation = Reservation::where('twilio_number', '=', $twilioNumber)->first();
+        $host = $reservation->property->user;
+        $guest = $reservation->user;
+
+        if ($incomingNumber === $host->fullNumber())
+        {
+            $outgoingNumber = $guest->fullNumber();
+        }
+        else
+        {
+            $outgoingNumber = $host->fullNumber();
+        }
+
+        return response($this->connectVoiceResponse($outgoingNumber))->header('Content-Type', 'application/xml');
+    }
+
+    private function connectVoiceResponse($outgoingNumber)
+    {
+        $response = new TwilioTwiml;
+        $response->play('http://howtodocs.s3.amazonaws.com/howdy-tng.mp3');
+        $response->dial($outgoingNumber);
+
+        return $response;
+    }
+
+    private function connectSmsResponse($messageBody, $outgoingNumber)
+    {
+        $response = new TwilioTwiml;
+        $response->message(
+            $messageBody,
+            ['to' => $outgoingNumber]
+        );
+
+        return $response;
+    }
+
     private function respond($smsResponse, $reservation)
     {
         $response = new TwilioTwiml;

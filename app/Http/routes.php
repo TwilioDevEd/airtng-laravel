@@ -113,3 +113,15 @@ Route::post(
     ['uses' => 'ReservationController@acceptReject',
      'as' => 'reservation-incoming']
 );
+
+Route::get(
+    '/reservation/connect_sms',
+    ['uses' => 'ReservationController@connectSms',
+     'as' => 'reservation-connect-sms']
+);
+
+Route::get(
+    '/reservation/connect_voice',
+    ['uses' => 'ReservationController@connectVoice',
+     'as' => 'reservation-connect-voice']
+);

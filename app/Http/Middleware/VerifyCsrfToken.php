@@ -12,6 +12,8 @@ class VerifyCsrfToken extends BaseVerifier
      * @var array
      */
     protected $except = [
-        'reservation/incoming'
+        'reservation/incoming',
+        'reservation/connect_sms',
+        'reservation/connect_voice'
     ];
 }
