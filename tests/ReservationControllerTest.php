@@ -54,7 +54,10 @@ class ReservationControllerTest extends TestCase
         $twilioNumber = config('services.twilio')['number'];
         $mockTwilioMessages
             ->shouldReceive('sendMessage')
-            ->with($twilioNumber, $newUser->fullNumber(), 'Some reservation message')
+            ->with($twilioNumber,
+                   $newUser->fullNumber(),
+                   'Some reservation message - Reply \'yes\' or \'accept\' to confirm the reservation, or anything else to reject it.'
+            )
             ->once();
 
         $this->app->instance(
@@ -78,7 +81,7 @@ class ReservationControllerTest extends TestCase
         $this->assertEquals('Some reservation message', $newUser->pendingReservations()->first()->message);
         $this->assertEquals($newUser2->id, $reservationFromHost->user->id);
         $this->assertEquals($reservation->message, 'Some reservation message');
-        $this->assertRedirectedToRoute('property-show', ['id' => $newProperty->id]);
+        $this->assertRedirectedToRoute('reservation-index', ['id' => $newProperty->id]);
         $this->assertSessionHas('status');
         $flashreservation = $this->app['session']->get('status');
         $this->assertEquals(

@@ -27,6 +27,7 @@
       <ul class="navbar-nav navbar-right pull-right">
         @if (Auth::check())
           <li><image src="{{ asset('images/spock.png') }}"></li>
+          <li><a href="{{ route('reservation-index') }}">Your reservations</a></li>
           <li><a href="{{ route('property-new') }}">New Vacation property</a></li>
           <li><a href="{{ route('logout') }}">Log Out</a></li>
         @else

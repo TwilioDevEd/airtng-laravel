@@ -14,6 +14,18 @@ use Log;
 
 class ReservationController extends Controller
 {
+    public function index(Authenticatable $user)
+    {
+        $reservations = array();
+        foreach ($user->propertyReservations as $reservation)
+        {
+            array_push($reservations, $reservation->fresh());
+        }
+        return view('reservation.index',
+                    ['hostReservations' => $reservations,
+                     'guestReservations' => $user->reservations]);
+    }
+
     /**
      * Store a new reservation
      *
@@ -40,7 +52,7 @@ class ReservationController extends Controller
             'status',
             "Sending your reservation request now."
         );
-        return redirect()->route('property-show', ['id' => $property->id]);
+        return redirect()->route('reservation-index', ['id' => $property->id]);
     }
 
     public function acceptReject(TwilioRestClient $client, Request $request)
@@ -159,11 +171,13 @@ class ReservationController extends Controller
 
         $twilioNumber = config('services.twilio')['number'];
 
+        $messageBody = $reservation->message . ' - Reply \'yes\' or \'accept\' to confirm the reservation, or anything else to reject it.';
+
         try {
             $client->account->messages->sendMessage(
                 $twilioNumber, // From a Twilio number in your account
                 $host->fullNumber(), // Text any number
-                $reservation->message
+                $messageBody
             );
         } catch (Exception $e) {
             Log::error($e->getMessage());

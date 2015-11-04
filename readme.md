@@ -1,7 +1,7 @@
-# Airtng App: Part 1 - Workflow Automation with Twilio - Laravel
-[![Build Status](https://travis-ci.org/TwilioDevEd/airtng-laravel.svg)](https://travis-ci.org/TwilioDevEd/airtng-laravel)
+# Airtng App: Part 2 - Masked Numbers With Twilio - Laravel
+[![Build Status](https://travis-ci.org/TwilioDevEd/airtng-laravel.svg?branch=airtng-masked-numbers)](https://travis-ci.org/TwilioDevEd/airtng-laravel)
 
-Learn how to automate your workflow using Twilio's REST API and Twilio SMS. This example app is a vacation rental site, where the host can confirm a reservation via SMS.
+Protect your customers' privacy, and create a seamless interaction by provisioning Twilio numbers on the fly, and routing all voice calls, and messages through your very own 3rd party. This allows you to control the interaction between your customers, while putting your customer's privacy first.
 
 ### Run the application
 

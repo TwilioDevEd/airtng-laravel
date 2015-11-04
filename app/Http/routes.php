@@ -108,6 +108,13 @@ Route::post(
      'middleware' => 'auth']
 );
 
+Route::get(
+    '/reservations',
+    ['as' => 'reservation-index',
+     'middleware' => 'auth',
+     'uses' => 'ReservationController@index']
+);
+
 Route::post(
     '/reservation/incoming',
     ['uses' => 'ReservationController@acceptReject',
