@@ -43,10 +43,9 @@ class Reservation extends Model
         $this->save();
     }
 
-    public function reject($twilioNumber)
+    public function reject()
     {
         $this->status = 'rejected';
-        $this->twilio_number = $twilioNumber;
         $this->save();
     }
 }

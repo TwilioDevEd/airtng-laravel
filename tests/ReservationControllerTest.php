@@ -130,6 +130,46 @@ class ReservationControllerTest extends TestCase
         $reservation = $reservation->fresh();
         $this->assertEquals('pending', $reservation->status);
 
+        $mockTwilioService = Mockery::mock('Services_Twilio')
+                                ->makePartial();
+        $mockTwilioAccount = Mockery::mock();
+        $mockTwilioAvailablePhoneNumbers = Mockery::mock();
+        $mockTwilioAccount->available_phone_numbers = $mockTwilioAvailablePhoneNumbers;
+        $mockTwilioService->account = $mockTwilioAccount;
+        $availableNumber = Mockery::mock();
+        $availableNumber->phone_number = '+15551112222';
+        $availableNumbers = Mockery::mock();
+        $availableNumbers->available_phone_numbers = array($availableNumber);
+
+        $mockTwilioIncomingPhoneNumbers = Mockery::mock();
+        $mockTwilioAccount->incoming_phone_numbers = $mockTwilioIncomingPhoneNumbers;
+
+        $twilioNumber = config('services.twilio')['number'];
+        $mockTwilioAvailablePhoneNumbers
+            ->shouldReceive('getList')
+            ->with('US', 'Local', array(
+                "AreaCode" => $newUser->areaCode(),
+                "VoiceEnabled" => "true",
+                "SmsEnabled" => "true"
+            ))
+            ->once()
+            ->andReturn($availableNumbers);
+
+        $mockTwilioIncomingPhoneNumbers
+            ->shouldReceive('create')
+            ->with(array(
+                "PhoneNumber" => "+15551112222",
+                "SmsApplicationSid" => config('services.twilio')['applicationSid'],
+                "VoiceApplicationSid" => config('services.twilio')['applicationSid']
+            ))
+            ->once()
+            ->andReturn('Some SID');
+
+        $this->app->instance(
+            'Services_Twilio',
+            $mockTwilioService
+        );
+
         // When
         $response = $this->call(
             'POST',

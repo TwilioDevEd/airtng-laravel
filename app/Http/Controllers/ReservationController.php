@@ -10,6 +10,7 @@ use App\VacationProperty;
 use DB;
 use Services_Twilio as TwilioRestClient;
 use Services_Twilio_Twiml as TwilioTwiml;
+use Log;
 
 class ReservationController extends Controller
 {
@@ -28,8 +29,6 @@ class ReservationController extends Controller
         );
         $property = VacationProperty::find($id);
         $reservation = new Reservation($request->all());
-
-        $twilioNumber = $this->getNewTwilioNumber($client, $property->user);
 
         $reservation->user()->associate($user);
 
@@ -63,7 +62,7 @@ class ReservationController extends Controller
             }
             else
             {
-                $reservation->reject($this->getNewTwilioNumber($client, $host));
+                $reservation->reject();
             }
 
             $smsResponse = 'You have successfully ' . $reservation->status . ' the reservation.';
@@ -122,10 +121,10 @@ class ReservationController extends Controller
                 "SmsEnabled" => "true"
             ));
         }
-        $twilioNumber = $numbers[0];
+        $twilioNumber = $numbers->available_phone_numbers[0]->phone_number;
 
         $numberSid = $client->account->incoming_phone_numbers->create(array(
-            "PhoneNumber" => "+15105647903",
+            "PhoneNumber" => $twilioNumber,
             "SmsApplicationSid" => config('services.twilio')['applicationSid'],
             "VoiceApplicationSid" => config('services.twilio')['applicationSid']
         ));
