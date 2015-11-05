@@ -39,8 +39,7 @@ class ReservationSeeder extends Seeder
         $reservation = new Reservation(
             ['message' => 'I want to reserve a room in your ship']
         );
-        $reservation->respond_phone_number = $guestUser->fullNumber();
-        $reservation->user()->associate($hostUser);
+        $reservation->user()->associate($guestUser);
         $property->reservations()->save($reservation);
     }
 }

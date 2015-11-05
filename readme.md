@@ -3,6 +3,18 @@
 
 Protect your customers' privacy, and create a seamless interaction by provisioning Twilio numbers on the fly, and routing all voice calls, and messages through your very own 3rd party. This allows you to control the interaction between your customers, while putting your customer's privacy first.
 
+### Create a TwiML App
+
+This project is configured to use a **TwiML App**, which allows us to easily set the voice URLs for all Twilio phone numbers we purchase in this app.
+
+Create a new TwiML app at https://www.twilio.com/user/account/apps/add and use its `Sid` as the `TWIML_APPLICATION_SID` environment variable wherever you run this app.
+
+![Creating a TwiML App](http://howtodocs.s3.amazonaws.com/call-tracking-twiml-app.gif)
+
+Once you have created your TwiML app, configure your Twilio phone number to use it ([instructions here](https://www.twilio.com/help/faq/twilio-client/how-do-i-create-a-twiml-app)).
+
+If you don't have a Twilio phone number yet, you can purchase a new number in your [Twilio Account Dashboard](https://www.twilio.com/user/account/phone-numbers/incoming).
+
 ### Run the application
 
 1. Clone the repository and `cd` into it.
@@ -28,6 +40,7 @@ Protect your customers' privacy, and create a seamless interaction by provisioni
   You can find your `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` under
   your
   [Twilio Account Settings](https://www.twilio.com/user/account/settings).
+  Set `TWILIO_APPLICATION_SID` to the app SID you created before.
   You can buy Twilio phone numbers at [Twilio numbers](https://www.twilio.com/user/account/phone-numbers/search)
   `TWILIO_NUMBER` should be set to the phone number you purchased above.
 1. Generate an `APP_KEY`:
@@ -50,36 +63,37 @@ Protect your customers' privacy, and create a seamless interaction by provisioni
    ```bash
    $ ngrok http 8000
    ```
-   Once you have started ngrok, update your Twilio number sms URL
+   Once you have started ngrok, update your TwiML app's voice and sms URL
    setting to use your ngrok hostname, so it will look something like
    this:
 
    ```
-   http://<your-ngrok-subdomain>.ngrok.io/reservation/incoming
+   http://<your-ngrok-subdomain>.ngrok.io/reservation/connect_voice
+   http://<your-ngrok-subdomain>.ngrok.io/reservation/connect_sms
    ```
 1. Configure Twilio to call your webhooks
- You will also need to configure Twilio to send requests to your application
- when sms are received.
+   You will also need to configure Twilio to send requests to your application
+   when sms are received.
 
- You will need to provision at least one Twilio number with sms capabilities
- so the application's users can make property reservations. You can buy a number [right
- here](https://www.twilio.com/user/account/phone-numbers/search). Once you have
- a number you need to configure your number to work with your application. Open
- [the number management page](https://www.twilio.com/user/account/phone-numbers/incoming)
- and open a number's configuration by clicking on it.
+   You will need to provision at least one Twilio number with sms capabilities
+   so the application's users can make property reservations. You can buy a number [right
+   here](https://www.twilio.com/user/account/phone-numbers/search). Once you have
+   a number you need to configure your number to work with your application. Open
+   [the number management page](https://www.twilio.com/user/account/phone-numbers/incoming)
+   and open a number's configuration by clicking on it.
 
- Remember that the number where you change the sms webhooks must be the same one you set on
- the `TWILIO_NUMBER` environment variable.
+   Remember that the number where you change the sms webhooks must be the same one you set on
+   the `TWILIO_NUMBER` environment variable.
 
- ![Configure Voice](http://howtodocs.s3.amazonaws.com/twilio-number-config-all-med.gif)
+   ![Configure Voice](http://howtodocs.s3.amazonaws.com/twilio-number-config-all-med.gif)
 
- For this application, you must set the voice webhook of your number to
- something like this:
+   For this application, you must set the sms webhook of your number to
+   something like this:
 
- ```
- http://<your-ngrok-subdomain>.ngrok.io/reservation/incoming
- ```
- And in this case set the `POST` method on the configuration for this webhook.
+   ```
+   http://<your-ngrok-subdomain>.ngrok.io/reservation/incoming
+   ```
+   And in this case set the `POST` method on the configuration for this webhook.
 1. Run the application using Artisan.
 
   ```bash
