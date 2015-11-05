@@ -17,7 +17,7 @@ Learn how to automate your workflow using Twilio's REST API and Twilio SMS. This
 1. Create a database.
 
   ```bash
-  $ createdb browser_calls
+  $ createdb airtng
   ```
 1. Copy the sample configuration file and edit it to match your configuration.
 

@@ -7,7 +7,7 @@ install:
 env:
   global:
   - DB_HOST=localhost
-  - DB_DATABASE=workflow_automation
+  - DB_DATABASE=airtng
   - DB_USERNAME=postgres
   - APP_ENV=testing
   - APP_KEY=rJhIZXkdo3FtwqdDJsC7OadHIVhnarEE
@@ -15,5 +15,5 @@ env:
   - TWILIO_AUTH_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   - TWILIO_NUMBER=+15552737123
 before_script:
-  - psql -c 'create database workflow_automation;' -U postgres
+  - psql -c 'create database airtng;' -U postgres
   - php artisan migrate
