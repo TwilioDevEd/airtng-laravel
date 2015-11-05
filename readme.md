@@ -50,12 +50,12 @@ Learn how to automate your workflow using Twilio's REST API and Twilio SMS. This
    ```bash
    $ ngrok http 8000
    ```
-   Once you have started ngrok, update your Twilio number voice URL
+   Once you have started ngrok, update your Twilio number sms URL
    setting to use your ngrok hostname, so it will look something like
    this:
 
    ```
-   http://<your-ngrok-subdomain>.ngrok.io/conference/join
+   http://<your-ngrok-subdomain>.ngrok.io/reservation/incoming
    ```
 1. Configure Twilio to call your webhooks
  You will also need to configure Twilio to send requests to your application
