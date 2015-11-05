@@ -93,7 +93,7 @@ class ReservationController extends Controller
         $incomingNumber = $request->input('From');
         $messageBody = $request->input('Body');
 
-        $reservation = Reservation::where('twilio_number', '=', $twilioNumber)->first();
+        $reservation = $this->getReservationFromNumber($twilioNumber);
         $host = $reservation->property->user;
         $guest = $reservation->user;
 
@@ -114,7 +114,7 @@ class ReservationController extends Controller
         $twilioNumber = $request->input('To');
         $incomingNumber = $request->input('From');
 
-        $reservation = Reservation::where('twilio_number', '=', $twilioNumber)->first();
+        $reservation = $this->getReservationFromNumber($twilioNumber);
         $host = $reservation->property->user;
         $guest = $reservation->user;
 
@@ -128,6 +128,11 @@ class ReservationController extends Controller
         }
 
         return response($this->connectVoiceResponse($outgoingNumber))->header('Content-Type', 'application/xml');
+    }
+
+    private function getReservationFromNumber($twilioNumber)
+    {
+        return Reservation::where('twilio_number', '=', $twilioNumber)->first();
     }
 
     private function connectVoiceResponse($outgoingNumber)
