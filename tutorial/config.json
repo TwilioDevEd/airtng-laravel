@@ -1,6 +1,6 @@
 {
-    "title": "Workflow Automation",
-    "repo": "TwilioDevEd/airtng-laravel",
-    "description": "Increase your rate of response by automating the workflows that are key to your business. In this tutorial, learn how to build a ready-for-scale automated SMS workflow, for a vacation rental company.",
+    "title": "Anonymous Communications",
+    "repo": "TwilioDevEd/airtng-laravel/tree/airtng-masked-numbers",
+    "description": "Protect your users' privacy by anonymously connecting them with Twilio Voice and SMS. Learn how to create disposable phone numbers on-demand, so two users can communicate without exchanging personal information.",
     "heroku": false
 }

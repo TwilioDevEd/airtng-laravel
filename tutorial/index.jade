@@ -1,195 +1,156 @@
 .chapter(data-title='Voice Conference and Broadcast')
   .step(data-title='Introduction', data-file='app/Http/routes.php')
     :markdown
-      ## Workflow Automation - Vacation Rental example
+      ## About this application
 
-      ![Airtng](http://howtodocs.s3.amazonaws.com/airtng-screen.png)
+      ![Airtng](//howtodocs.s3.amazonaws.com/airtng-screen.png)
 
-      At its core this use-case is about enabling your service providers
-      (agents, hosts, customer service reps, administrators, etc) to better
-      serve their customer. To illustrate a very real-world example of this
-      use-case we will implement a webapp for finding and booking vacation
-      properties--we're calling it Airtng. Here's how it works:
+      This [Ruby on Rails](http://rubyonrails.org/) sample application is
+      modeled after the amazing rental experience created by
+      [AirBnB](//www.airbnb.com), but with more 
+      [Klingons](//en.wikipedia.org/wiki/Klingon). 
 
-      1. A host creates a vacation property
+      Host users can offer rental properties which other guest users can reserve. 
+      The guest and the host can then anonymously communicate via a disposable Twilio phone number created 
+      just for a reservation. In this tutorial, we'll show you the key bits of
+      code to make this work. 
 
-      1. A guest requests a reservation on that property
+      To run this sample app yourself, 
+      [download the code and follow the instructions on GitHub](//github.com/TwilioDevEd/airtng-laravel/tree/airtng-masked-numbers).
 
-      1. The host receives an SMS notifying them of the recent reservation request. The host can either Accept or Reject the reservation.
+      Let's get started! Click the right arrow above to move to the next step
+      of the tutorial.
 
-      1. The guest is notified that their reservation was either accepted or rejected.
+      ---
 
-      ## Building Blocks
+      **See Also:**
+      * [AirTNG App Part One: Workflow Automation](//github.com/TwilioDevEd/airtng-laravel)
+      * [Getting Started with Laravel](//laravel.com/docs/5.1)
+      * [Getting started with Eloquent models](//laravel.com/docs/5.1/eloquent)
+      * [Laravel authentication](//laravel.com/docs/5.1/authentication)
+      * [Getting started with the Twilio PHP library]((//www.twilio.com/docs/php/install)
 
-      We'll be using the Twilio REST API to implement this use-case:
-
-      * [Messages Resource](//www.twilio.com/docs/api/rest/sending-messages): We will use Twilio directly to send our users messages at important junctures.
-
-      Let's get started! Click the right arrow to move on to the next step of the tutorial.
-
-  .step(data-title='Session users', data-file='database/migrations/2014_10_12_000000_create_users_table.php',
-    data-highlight='15-24')
+  .step(data-title='Create a reservation',
+    data-file='app/Http/Controllers/ReservationController.php',
+    data-highlight='29-56')
     :markdown
-      ## Users and session management
+      ## Create a reservation
 
-      For this workflow to work, we need to have users created in our application,
-      and allow them to log in into airtng.
-      Each user will hold his personal information, which will be required when the
-      moment to send sms notifications come.
+      The first step in connecting a guest and host is creating a reservation.
+      Here, we handle a form submission for a new reservation which contains the
+      guest's name and phone number.
+
+      ---
 
       **See Also:**
       * [Getting Started with Laravel](//laravel.com/docs/5.1)
       * [Getting started with Eloquent models](//laravel.com/docs/5.1/eloquent)
       * [Laravel authentication](//laravel.com/docs/5.1/authentication)
 
-  .step(data-title='Vacation Property Model',
-    data-file='database/migrations/2015_10_23_193814_create_vacation_properties_table.php',
-    data-highlight='15-25')
+  .step(data-title='Confirm the reservation',
+    data-file='app/Http/Controllers/ReservationController.php',
+    data-highlight='58-88')
     :markdown
-      ## Vacation Property
-      In order to build a true vacation rentals company we'll need a way to
-      create the property listings.
+      ## Confirm the reservation
 
-      The `VacationProperty` model belongs to the `User` who created it
-      (we'll call this user the _host_ moving forward) and contains only two
-      properties: a `description` and an `image_url`.
+      Before the reservation is finalized, the host needs to confirm that the property
+      is still available. Learn how to automate this process in [our first AirTNG
+      tutorial, Workflow Automation](//github.com/TwilioDevEd/airtng-laravel).
 
-      It has two associations in that it has many reservations and therefore
-      many users through those reservations.
+      Once the reservation is confirmed, we need to create a Twilio number that
+      the guest and host can use to communicate in the `getNewTwilioNumber` method.
+
+  .step(data-title="Create twilio number",
+    data-file='app/Http/Controllers/ReservationController.php',
+    data-highlight='192-222')
+    :markdown
+      ## Create a phone number for the guest and host to use
+
+      Here we use a [Twilio REST API Client](//twilio-php.readthedocs.org/en/latest/index.html#getting-started)
+      to search for and buy a new phone number to associate with the reservation.
+      When we buy the number, we designate a [Twilio application](//www.twilio.com/docs/api/rest/applications)
+      that will handle [webhook](//en.wikipedia.org/wiki/Webhook) requests
+      when the new number receives an incoming call or text.
+
+      We then save the new phone number on our `Reservation` model, so when our app
+      receives calls or texts to this number, we'll know which reservation the call or
+      text belongs to.
+
+      ---
 
       **See Also:**
-      * [Eloquent: Migrations](//laravel.com/docs/5.1/migrations)
-      * [Eloquent: Relationships](//laravel.com/docs/5.1/eloquent-relationships)
+      * [Searching for Available Numbers](//www.twilio.com/docs/api/rest/available-phone-numbers)
+      * [Purchase a Phone Number with the REST API](//www.twilio.com/docs/api/rest/incoming-phone-numbers)
+      * [Create an Application in your account portal](//www.twilio.com/user/account/apps)
 
-  .step(data-title="Reservation Model",
-    data-file='database/migrations/2015_10_23_194614_create_reservations_table.php',
-    data-highlight='15-31')
-    :markdown
-      ## The Reservation Model
-
-      The `Reservation` model is at the center of the workflow for this application.
-      It is responsible for keeping track of:
-        * the `VacationProperty` it is associated with
-
-        * the `User` who owns that vacation property (the host)
-
-        * the guest phone number
-
-        * status of the reservation
-
-      Since the reservation can only have one guest in this example, we simplified
-      the model by assigning phone_number directly on the model.
-
-  .step(data-title="Reservation Creation",
+  .step(data-title="Find a Reservation",
     data-file='app/Http/Controllers/ReservationController.php',
-    data-highlight='22-43')
+    data-highlight='114-119, 133-136')
     :markdown
-      ## Reservation creation
+      ## Find a reservation when a guest or host calls
 
-      The reservation creation form holds only one field, the message that will
-      be sent to the _host_ user when reserving one of his properties. The rest
-      of the information necessary to create a reservation is taken from the user
-      that is logged in into the system and also the relationship between a property
-      and it's owner.
+      When someone sends an SMS or calls one of the Twilio numbers you have configured,
+      Twilio makes a request to the url you configured. In this request, Twilio
+      includes some usefull information as the number that originally sent the sms
+      or made the call, and also what is the Twilio number that triggered this request.
+      Take a look at [Twilio's SMS
+      Documentation](https://www.twilio.com/docs/api/twiml/sms/twilio_request#request-parameters)
+      and [Twilio's Voice
+      Documentation](https://www.twilio.com/docs/api/twiml/twilio_request#synchronous-request-parameters)
+      for a full list of the parameters you can use.
 
-      A reservation is created with a default status `pending`, so when the _host_
-      replies with a `confirm` or `reject` response, the system knows which reservation
-      the _host_ is referring to.
+      In our controller we use the `To` parameter sent by Twilio to find a reservation
+      that has the number we bought stored in it, as this is the number both hosts
+      and guests will call and send sms to.
 
-      In the next step we'll take a look at how the sms notification is sent to
-      the host when the reservation is created.
+  .step(data-title="Connect Via SMS",
+    data-file='app/Http/Controllers/ReservationController.php',
+    data-highlight='90-110')
+    :markdown
+      ## Connect guest and host via SMS
+
+      Our [Twilio application](//www.twilio.com/docs/api/rest/applications)
+      should be configured to [send HTTP requests](//www.twilio.com/docs/api/twiml/twilio_request) 
+      to this controller method on any incoming text message. Our app responds with 
+      [TwiML](//www.twilio.com/docs/api/twiml) to tell Twilio what to do in
+      response to the message.
+
+      If the initial message sent to the anonymous number was sent by the host, 
+      we forward it on to the guest. We forward it
+      to the host if the original message was sent by the guest.
+
+      ---
 
       **See Also:**
-      * [Eloquent: Inserting related models](//laravel.com/docs/5.1/eloquent-relationships#inserting-related-models)
-      * [Eloquent: Querying related models](//laravel.com/docs/5.1/eloquent-relationships#querying-relations)
-
-  .step(data-title="Reservation Creation",
+      * [The Message TwiML verb](//www.twilio.com/docs/api/twiml/sms/message)
+      * [Your message logs in the account portal](//www.twilio.com/user/account/log/messages)
+      
+  .step(data-title="Connect Via Phone Call",
     data-file='app/Http/Controllers/ReservationController.php',
-    data-highlight='90-105')
+    data-highlight='138-145')
     :markdown
-      ## Notifying the host
+      ## Connect guest and host via phone call
 
-      When a reservation is created for a property, we want to notify the owner
-      of said property that someone has made a reservation.
+      Our [Twilio application](//www.twilio.com/docs/api/rest/applications)
+      will [send HTTP requests](//www.twilio.com/docs/api/twiml/twilio_request) 
+      to this method on any incoming voice call. Our app responds with 
+      [TwiML instructions](//www.twilio.com/docs/api/twiml)
+      that tell Twilio to `Play` an introductory MP3 audio file and then
+      `Dial` either the guest or host, depending on who initiated the call.
 
-      This is where we use [Twilio's Rest
-      API](//twilio-php.readthedocs.org/en/latest/usage/rest/messages.html#sending-a-message)
-      to send a sms message to the _host_, using your [Twilio phone
-      number](//www.twilio.com/user/account/phone-numbers/incoming).
-
-      As you can see, sending sms messages using Twilio is as easy as the code
-      to your right shows. Now we just have to wait for the host to send an sms
-      response accepting or rejecting the reservation, so we can notify the guest
-      and host that the reservation information is updated accordingly.
-
-      The next step shows how to handle and configure the host's sms response.
+      ---
 
       **See Also:**
-      * [Twilio Rest API](//www.twilio.com/docs/api/rest)
-      * [Twilio helper library](//www.twilio.com/docs/php/install)
-      * [Twilio-php specific documentation](//twilio-php.readthedocs.org/en/latest)
-      
-  .step(data-title="Reservation Creation",
-    data-file='app/Http/Controllers/ReservationController.php',
-    data-highlight='45-88')
-    :markdown
-      ## Handling Incoming Messages
-
-      Let's take a closer look at the `acceptReject` controller. This controller
-      handles our incoming Twilio request and does three things:
-
-      1. Checks for a pending reservation from the incoming user
-
-      1. Updates the status of the reservation
-
-      1. Responds to the host and sends notification to the guest.
-
-      ## Incoming Twilio Request
-      In your [Twilio number](//www.twilio.com/user/account/phone-numbers/incoming)
-      you must setup the sms web hook to call your
-      application's end point in the route `/reservation/incoming`. Remember to
-      to expose your development machine to the outside world using
-      [ngrok](//ngrok.com/). So, your url for the sms web hook on your number
-      should look like this:
-      ```
-      http://<subdomain>.ngrok.io/reservation/incoming
-      ```
-      
-      An incoming request from Twilio comes with some helpful
-      [parameters](//www.twilio.com/docs/api/twiml/sms/twilio_request#request-parameters).
-      These include the `From` phone number and the message `Body`.
-
-      We'll use the `From` parameter to lookup the host and check if she has any
-      pending reservations. If she does, we'll use the message body to check if she
-      accepted or rejected the reservation.
-      
-      In the last step, we'll use [Twilio's TwiML](//twilio-php.readthedocs.org/en/latest/usage/twiml.html)
-      as a response to Twilio's server
-      instructing it to send sms messages to both the _host_ and _guest_.
-
-      ## TwiML Response
-      After updating the reservation status, we must notify the _host_ that he/she
-      has succesffully confirmed or rejected the reservation, or if there are no
-      pending reservations for that user, send a sms saying this.
-
-      Also, if the reservation is confirmed or rejected we send an additional sms
-      to the guest to inform the decision the host made, regarding the property reservation.
-      
-      We use the [Message verb](//twilio-php.readthedocs.org/en/latest/usage/twiml.html#message)
-      from TwiML to instruct Twilio's server that it should send two sms messages.
+      * [TwiML Dial verb](//www.twilio.com/docs/api/twiml/dial)
+      * [TwiML Play verb](//www.twilio.com/docs/api/twiml/dial)
       
   .step(data-title='Finish')
     :markdown
-      ## All Done
+      ## Where to next?
 
-      Congrats! You just learned how to automate your workflow with Twilio SMS.
-
-      To improve upon this you could add anonymous communications so that the host
-      and guest could communicate through a shared Twilio phone number.
-      Hmmm... maybe we'll have to put together a tutorial on that!
-
-      If you're a PHP developer working with Twilio, you might enjoy these
-      other tutorials:
+      That's it! We've just implemented anonymous communications that allow your 
+      customers to connect while protecting their privacy. If you're a PHP
+      developer working with Twilio, you might want to check out these other tutorials:
 
       [**Click-To-Call**](//www.twilio.com/docs/howto/walkthrough/click-to-call/php/laravel)
 
@@ -208,3 +169,5 @@
       
 
       ![Airtng](http://howtodocs.s3.amazonaws.com/airtng-screen2.png)
+
+      
