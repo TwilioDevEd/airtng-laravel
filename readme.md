@@ -50,7 +50,7 @@ Learn how to automate your workflow using Twilio's REST API and Twilio SMS. This
    ```bash
    $ ngrok http 8000
    ```
-   Once you have started ngrok, update your TwiML app's voice URL
+   Once you have started ngrok, update your Twilio number voice URL
    setting to use your ngrok hostname, so it will look something like
    this:
 
@@ -58,7 +58,8 @@ Learn how to automate your workflow using Twilio's REST API and Twilio SMS. This
    http://<your-ngrok-subdomain>.ngrok.io/conference/join
    ```
 1. Configure Twilio to call your webhooks
- You will also need to configure Twilio to call your application when sms are received.
+ You will also need to configure Twilio to send requests to your application
+ when sms are received.
 
  You will need to provision at least one Twilio number with sms capabilities
  so the application's users can make property reservations. You can buy a number [right
