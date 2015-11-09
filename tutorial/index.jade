@@ -1,11 +1,11 @@
-.chapter(data-title='Voice Conference and Broadcast')
-  .step(data-title='Introduction', data-file='app/Http/routes.php')
+.chapter(data-title='Masked Numbers')
+  .step(data-title='About This Application', data-file='app/Http/routes.php')
     :markdown
-      ## About this application
+      ## About This Application
 
       ![Airtng](//howtodocs.s3.amazonaws.com/airtng-screen.png)
 
-      This [Ruby on Rails](http://rubyonrails.org/) sample application is
+      This [PHP Laravel](//laravel.com/docs/5.1) sample application is
       modeled after the amazing rental experience created by
       [AirBnB](//www.airbnb.com), but with more 
       [Klingons](//en.wikipedia.org/wiki/Klingon). 
@@ -30,11 +30,11 @@
       * [Laravel authentication](//laravel.com/docs/5.1/authentication)
       * [Getting started with the Twilio PHP library]((//www.twilio.com/docs/php/install)
 
-  .step(data-title='Create a reservation',
+  .step(data-title='Create a Reservation',
     data-file='app/Http/Controllers/ReservationController.php',
     data-highlight='29-56')
     :markdown
-      ## Create a reservation
+      ## Create a Reservation
 
       The first step in connecting a guest and host is creating a reservation.
       Here, we handle a form submission for a new reservation which contains the
@@ -47,11 +47,11 @@
       * [Getting started with Eloquent models](//laravel.com/docs/5.1/eloquent)
       * [Laravel authentication](//laravel.com/docs/5.1/authentication)
 
-  .step(data-title='Confirm the reservation',
+  .step(data-title='Confirm the Reservation',
     data-file='app/Http/Controllers/ReservationController.php',
     data-highlight='58-88')
     :markdown
-      ## Confirm the reservation
+      ## Confirm the Reservation
 
       Before the reservation is finalized, the host needs to confirm that the property
       is still available. Learn how to automate this process in [our first AirTNG
@@ -60,11 +60,11 @@
       Once the reservation is confirmed, we need to create a Twilio number that
       the guest and host can use to communicate in the `getNewTwilioNumber` method.
 
-  .step(data-title="Create twilio number",
+  .step(data-title="Create Twilio Number",
     data-file='app/Http/Controllers/ReservationController.php',
     data-highlight='192-222')
     :markdown
-      ## Create a phone number for the guest and host to use
+      ## Create a Twilio Number
 
       Here we use a [Twilio REST API Client](//twilio-php.readthedocs.org/en/latest/index.html#getting-started)
       to search for and buy a new phone number to associate with the reservation.
@@ -87,10 +87,10 @@
     data-file='app/Http/Controllers/ReservationController.php',
     data-highlight='114-119, 133-136')
     :markdown
-      ## Find a reservation when a guest or host calls
+      ## Find a Reservation
 
       When someone sends an SMS or calls one of the Twilio numbers you have configured,
-      Twilio makes a request to the url you configured. In this request, Twilio
+      Twilio makes a request to the url you set in the Twiml app. In this request, Twilio
       includes some usefull information as the number that originally sent the sms
       or made the call, and also what is the Twilio number that triggered this request.
       Take a look at [Twilio's SMS
@@ -107,7 +107,7 @@
     data-file='app/Http/Controllers/ReservationController.php',
     data-highlight='90-110')
     :markdown
-      ## Connect guest and host via SMS
+      ## Connect Via SMS
 
       Our [Twilio application](//www.twilio.com/docs/api/rest/applications)
       should be configured to [send HTTP requests](//www.twilio.com/docs/api/twiml/twilio_request) 
@@ -129,7 +129,7 @@
     data-file='app/Http/Controllers/ReservationController.php',
     data-highlight='138-145')
     :markdown
-      ## Connect guest and host via phone call
+      ## Connect Via Phone Call
 
       Our [Twilio application](//www.twilio.com/docs/api/rest/applications)
       will [send HTTP requests](//www.twilio.com/docs/api/twiml/twilio_request) 
@@ -143,10 +143,10 @@
       **See Also:**
       * [TwiML Dial verb](//www.twilio.com/docs/api/twiml/dial)
       * [TwiML Play verb](//www.twilio.com/docs/api/twiml/dial)
-      
-  .step(data-title='Finish')
+
+  .step(data-title='Where to Next?')
     :markdown
-      ## Where to next?
+      ## Where to Next?
 
       That's it! We've just implemented anonymous communications that allow your 
       customers to connect while protecting their privacy. If you're a PHP
@@ -169,5 +169,3 @@
       
 
       ![Airtng](http://howtodocs.s3.amazonaws.com/airtng-screen2.png)
-
-      
