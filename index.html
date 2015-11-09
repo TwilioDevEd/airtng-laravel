@@ -9,9 +9,9 @@
 .wrapper {
   height:100%;
   width:100%;
-}</style><link rel="shortcut icon" href="//twilio.com/bundles/marketing/img/favicons/favicon.ico"><link rel="apple-touch-icon" href="//twilio.com/bundles/marketing/img/favicons/favicon_57.png"><link rel="apple-touch-icon" sizes="72x72" href="//twilio.com/bundles/marketing/img/favicons/favicon_72.png"><link rel="apple-touch-icon" sizes="114x114" href="//twilio.com/bundles/marketing/img/favicons/favicon_114.png"><link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"><link rel="stylesheet" href="viewsaurus.css"></head><body><div class="wrapper"><div id="viewsaurus" data-title="Workflow Automation"><div class="saurus-panes"><div class="saurus-prose"><div class="saurus-prose-header"><div class="title-outer"><span class="step-title">Workflow Automation</span></div></div><div class="saurus-nav-buttons"><div class="saurus-nav-button nav-overview"><div class="saurus-nav-button-inner"><i class="fa fa-fw fa-list"></i></div><div class="nav-divider"></div></div><div class="saurus-nav-button nav-previous"><div class="saurus-nav-button-inner"><a href=""> <i class="fa fa-fw fa-play fa-rotate-180"></i></a></div><div class="nav-divider"></div></div><div class="saurus-nav-button nav-next clickable"><div class="saurus-nav-button-inner"><a href="#1"> <i class="fa fa-fw fa-play"></i></a></div></div><div class="saurus-next-title"><span class="next-title-inner"></span></div></div><div class="saurus-progress-bar"></div><div class="saurus-start"><p>Increase your rate of response by automating the workflows that are key to your business. In this tutorial, learn how to build a ready-for-scale automated SMS workflow, for a vacation rental company.</p><a href="#0">Start Tutorial</a></div><div class="saurus-content"><div data-title="Voice Conference and Broadcast" class="chapter"><div data-title="Introduction" data-file="app/Http/routes.php" class="step"><h2 id="workflow-automation-vacation-rental-example">Workflow Automation - Vacation Rental example</h2>
+}</style><link rel="shortcut icon" href="//twilio.com/bundles/marketing/img/favicons/favicon.ico"><link rel="apple-touch-icon" href="//twilio.com/bundles/marketing/img/favicons/favicon_57.png"><link rel="apple-touch-icon" sizes="72x72" href="//twilio.com/bundles/marketing/img/favicons/favicon_72.png"><link rel="apple-touch-icon" sizes="114x114" href="//twilio.com/bundles/marketing/img/favicons/favicon_114.png"><link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"><link rel="stylesheet" href="viewsaurus.css"></head><body><div class="wrapper"><div id="viewsaurus" data-title="Workflow Automation"><div class="saurus-panes"><div class="saurus-prose"><div class="saurus-prose-header"><div class="title-outer"><span class="step-title">Workflow Automation</span></div></div><div class="saurus-nav-buttons"><div class="saurus-nav-button nav-overview"><div class="saurus-nav-button-inner"><i class="fa fa-fw fa-list"></i></div><div class="nav-divider"></div></div><div class="saurus-nav-button nav-previous"><div class="saurus-nav-button-inner"><a href=""> <i class="fa fa-fw fa-play fa-rotate-180"></i></a></div><div class="nav-divider"></div></div><div class="saurus-nav-button nav-next clickable"><div class="saurus-nav-button-inner"><a href="#1"> <i class="fa fa-fw fa-play"></i></a></div></div><div class="saurus-next-title"><span class="next-title-inner"></span></div></div><div class="saurus-progress-bar"></div><div class="saurus-start"><p>Increase your rate of response by automating the workflows that are key to your business. In this tutorial, learn how to build a ready-for-scale automated SMS workflow, for a vacation rental company.</p><a href="#0">Start Tutorial</a></div><div class="saurus-content"><div data-title="Workflow Automation" class="chapter"><div data-title="Introduction" data-file="app/Http/routes.php" class="step"><h2 id="workflow-automation-vacation-rental-example">Workflow Automation - Vacation Rental example</h2>
 <p><img src="http://howtodocs.s3.amazonaws.com/airtng-screen.png" alt="Airtng"></p>
-<p>At its core this use-case is about enabling your service providers
+<p>At its core, this use-case is about enabling your service providers
 (agents, hosts, customer service reps, administrators, etc) to better
 serve their customer. To illustrate a very real-world example of this
 use-case we will implement a webapp for finding and booking vacation
@@ -32,18 +32,18 @@ properties--we&#39;re calling it Airtng. Here&#39;s how it works:</p>
 <li><a href="//www.twilio.com/docs/api/rest/sending-messages">Messages Resource</a>: We will use Twilio directly to send our users messages at important junctures.</li>
 </ul>
 <p>Let&#39;s get started! Click the right arrow to move on to the next step of the tutorial.</p>
-</div><div data-title="Session users" data-file="database/migrations/2014_10_12_000000_create_users_table.php" data-highlight="15-24" class="step"><h2 id="users-and-session-management">Users and session management</h2>
+</div><div data-title="Users and Session Management" data-file="database/migrations/2014_10_12_000000_create_users_table.php" data-highlight="15-24" class="step"><h2 id="users-and-session-management">Users and Session Management</h2>
 <p>For this workflow to work, we need to have users created in our application,
 and allow them to log in into airtng.
 Each user will hold his personal information, which will be required when the
-moment to send sms notifications come.</p>
+moment to send sms notifications comes.</p>
 <p><strong>See Also:</strong></p>
 <ul>
-<li><a href="//laravel.com/docs/5.1">Getting Started with Laravel</a></li>
+<li><a href="//laravel.com/docs/5.1">Getting started with Laravel</a></li>
 <li><a href="//laravel.com/docs/5.1/eloquent">Getting started with Eloquent models</a></li>
 <li><a href="//laravel.com/docs/5.1/authentication">Laravel authentication</a></li>
 </ul>
-</div><div data-title="Vacation Property Model" data-file="database/migrations/2015_10_23_193814_create_vacation_properties_table.php" data-highlight="15-25" class="step"><h2 id="vacation-property">Vacation Property</h2>
+</div><div data-title="Vacation Property" data-file="database/migrations/2015_10_23_193814_create_vacation_properties_table.php" data-highlight="15-25" class="step"><h2 id="vacation-property">Vacation Property</h2>
 <p>In order to build a true vacation rentals company we&#39;ll need a way to
 create the property listings.</p>
 <p>The <code>VacationProperty</code> model belongs to the <code>User</code> who created it
@@ -71,7 +71,7 @@ It is responsible for keeping track of:</p>
 </ul>
 <p>Since the reservation can only have one guest in this example, we simplified
 the model by assigning phone_number directly on the model.</p>
-</div><div data-title="Reservation Creation" data-file="app/Http/Controllers/ReservationController.php" data-highlight="22-43" class="step"><h2 id="reservation-creation">Reservation creation</h2>
+</div><div data-title="Reservation Creation" data-file="app/Http/Controllers/ReservationController.php" data-highlight="22-43" class="step"><h2 id="reservation-creation">Reservation Creation</h2>
 <p>The reservation creation form holds only one field, the message that will
 be sent to the <em>host</em> user when reserving one of his properties. The rest
 of the information necessary to create a reservation is taken from the user
@@ -87,7 +87,7 @@ the host when the reservation is created.</p>
 <li><a href="//laravel.com/docs/5.1/eloquent-relationships#inserting-related-models">Eloquent: Inserting related models</a></li>
 <li><a href="//laravel.com/docs/5.1/eloquent-relationships#querying-relations">Eloquent: Querying related models</a></li>
 </ul>
-</div><div data-title="Reservation Creation" data-file="app/Http/Controllers/ReservationController.php" data-highlight="90-105" class="step"><h2 id="notifying-the-host">Notifying the host</h2>
+</div><div data-title="Notifying the Host" data-file="app/Http/Controllers/ReservationController.php" data-highlight="90-105" class="step"><h2 id="notifying-the-host">Notifying the Host</h2>
 <p>When a reservation is created for a property, we want to notify the owner
 of said property that someone has made a reservation.</p>
 <p>This is where we use <a href="//twilio-php.readthedocs.org/en/latest/usage/rest/messages.html#sending-a-message">Twilio&#39;s Rest
@@ -105,7 +105,7 @@ and host that the reservation information is updated accordingly.</p>
 <li><a href="//www.twilio.com/docs/php/install">Twilio helper library</a></li>
 <li><a href="//twilio-php.readthedocs.org/en/latest">Twilio-php specific documentation</a></li>
 </ul>
-</div><div data-title="Reservation Creation" data-file="app/Http/Controllers/ReservationController.php" data-highlight="45-88" class="step"><h2 id="handling-incoming-messages">Handling Incoming Messages</h2>
+</div><div data-title="Handling Incoming Messages" data-file="app/Http/Controllers/ReservationController.php" data-highlight="45-88" class="step"><h2 id="handling-incoming-messages">Handling Incoming Messages</h2>
 <p>Let&#39;s take a closer look at the <code>acceptReject</code> controller. This controller
 handles our incoming Twilio request and does three things:</p>
 <ol>
@@ -116,7 +116,7 @@ handles our incoming Twilio request and does three things:</p>
 <li><p>Responds to the host and sends notification to the guest.</p>
 </li>
 </ol>
-<h2 id="incoming-twilio-request">Incoming Twilio Request</h2>
+</div><div data-title="Incoming Twilio Request" data-file="app/Http/Controllers/ReservationController.php" data-highlight="47-52" class="step"><h2 id="incoming-twilio-request">Incoming Twilio Request</h2>
 <p>In your <a href="//www.twilio.com/user/account/phone-numbers/incoming">Twilio number</a>
 you must setup the sms web hook to call your
 application&#39;s end point in the route <code>/reservation/incoming</code>. Remember to
@@ -133,7 +133,7 @@ accepted or rejected the reservation.</p>
 <p>In the last step, we&#39;ll use <a href="//twilio-php.readthedocs.org/en/latest/usage/twiml.html">Twilio&#39;s TwiML</a>
 as a response to Twilio&#39;s server
 instructing it to send sms messages to both the <em>host</em> and <em>guest</em>.</p>
-<h2 id="twiml-response">TwiML Response</h2>
+</div><div data-title="TwiML Response" data-file="app/Http/Controllers/ReservationController.php" data-highlight="75-88" class="step"><h2 id="twiml-response">TwiML Response</h2>
 <p>After updating the reservation status, we must notify the <em>host</em> that he/she
 has succesffully confirmed or rejected the reservation, or if there are no
 pending reservations for that user, send a sms saying this.</p>
@@ -141,7 +141,7 @@ pending reservations for that user, send a sms saying this.</p>
 to the guest to inform the decision the host made, regarding the property reservation.</p>
 <p>We use the <a href="//twilio-php.readthedocs.org/en/latest/usage/twiml.html#message">Message verb</a>
 from TwiML to instruct Twilio&#39;s server that it should send two sms messages.</p>
-</div><div data-title="Finish" class="step"><h2 id="all-done">All Done</h2>
+</div><div data-title="All Done" class="step"><h2 id="all-done">All Done</h2>
 <p>Congrats! You just learned how to automate your workflow with Twilio SMS.</p>
 <p>To improve upon this you could add anonymous communications so that the host
 and guest could communicate through a shared Twilio phone number.
