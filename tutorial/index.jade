@@ -34,8 +34,7 @@
 
       For this workflow to work, we need to have users created in our application,
       and allow them to log in into airtng.
-      Each user will hold his personal information, which will be required when the
-      moment to send sms notifications comes.
+      Each `User` will need to have a `phone_number` which will be required to send sms notifications later. Otherwise for our purposes we can use a pretty standard user model.
 
       **See Also:**
       * [Getting started with Laravel](//laravel.com/docs/5.1)
@@ -110,17 +109,17 @@
       ## Notifying the Host
 
       When a reservation is created for a property, we want to notify the owner
-      of said property that someone has made a reservation.
+      of that property that someone has made a reservation.
 
       This is where we use [Twilio's Rest
       API](//twilio-php.readthedocs.org/en/latest/usage/rest/messages.html#sending-a-message)
-      to send a sms message to the _host_, using your [Twilio phone
+      to send a sms message to the _host_, using our [Twilio phone
       number](//www.twilio.com/user/account/phone-numbers/incoming).
 
-      As you can see, sending sms messages using Twilio is as easy as the code
-      to your right shows. Now we just have to wait for the host to send an sms
-      response accepting or rejecting the reservation, so we can notify the guest
-      and host that the reservation information is updated accordingly.
+      As you can see, sending sms messages using Twilio is just a few lines of
+      code. Now we just have to wait for the host to send an sms response
+      accepting or rejecting the reservation, so we can notify the guest and
+      host that the reservation information is updated accordingly.
 
       The next step shows how to handle and configure the host's sms response.
 
@@ -153,7 +152,7 @@
       you must setup the sms web hook to call your
       application's end point in the route `/reservation/incoming`. Remember to
       to expose your development machine to the outside world using
-      [ngrok](//ngrok.com/). So, your url for the sms web hook on your number
+      [ngrok](//ngrok.com/). The url for the sms web hook on your number
       should look like this:
       ```
       http://<subdomain>.ngrok.io/reservation/incoming
@@ -167,9 +166,8 @@
       pending reservations. If she does, we'll use the message body to check if she
       accepted or rejected the reservation.
       
-      In the last step, we'll use [Twilio's TwiML](//twilio-php.readthedocs.org/en/latest/usage/twiml.html)
-      as a response to Twilio's server
-      instructing it to send sms messages to both the _host_ and _guest_.
+      In the last step, we'll respond to Twilio's request with some [TwiML](//twilio-php.readthedocs.org/en/latest/usage/twiml.html)
+      instructing it to send an SMS to both the _host_ and _guest_.
   
   .step(data-title="TwiML Response",
     data-file='app/Http/Controllers/ReservationController.php',
@@ -177,7 +175,7 @@
     :markdown
       ## TwiML Response
       After updating the reservation status, we must notify the _host_ that he/she
-      has succesffully confirmed or rejected the reservation, or if there are no
+      has successfully confirmed or rejected the reservation, or if there are no
       pending reservations for that user, send a sms saying this.
 
       Also, if the reservation is confirmed or rejected we send an additional sms
