@@ -68,9 +68,12 @@ text belongs to.</p>
 </div><div data-title="Find a Reservation" data-file="app/Http/Controllers/ReservationController.php" data-highlight="114-119, 133-136" class="step"><h2 id="find-a-reservation">Find a Reservation</h2>
 <p>When someone sends an SMS or calls one of the Twilio numbers you have configured,
 Twilio makes a request to the url you set in the Twiml app. In this request, Twilio
-includes some usefull information as the number that originally sent the sms
-or made the call, and also what is the Twilio number that triggered this request.
-Take a look at <a href="https://www.twilio.com/docs/api/twiml/sms/twilio_request#request-parameters">Twilio&#39;s SMS
+includes some useful information including: </p>
+<ul>
+<li>the <code>From</code> number that originally called or sent an SMS</li>
+<li>the <code>To</code> Twilio number that triggered this request</li>
+</ul>
+<p>Take a look at <a href="https://www.twilio.com/docs/api/twiml/sms/twilio_request#request-parameters">Twilio&#39;s SMS
 Documentation</a>
 and <a href="https://www.twilio.com/docs/api/twiml/twilio_request#synchronous-request-parameters">Twilio&#39;s Voice
 Documentation</a>
@@ -85,8 +88,8 @@ to this controller method on any incoming text message. Our app responds with
 <a href="//www.twilio.com/docs/api/twiml">TwiML</a> to tell Twilio what to do in
 response to the message.</p>
 <p>If the initial message sent to the anonymous number was sent by the host, 
-we forward it on to the guest. We forward it
-to the host if the original message was sent by the guest.</p>
+we forward it on to the guest. Conversely, if the original message was sent by the guest, we forward it
+to the host.</p>
 <hr>
 <p><strong>See Also:</strong></p>
 <ul>
