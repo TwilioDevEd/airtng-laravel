@@ -91,8 +91,10 @@
 
       When someone sends an SMS or calls one of the Twilio numbers you have configured,
       Twilio makes a request to the url you set in the Twiml app. In this request, Twilio
-      includes some usefull information as the number that originally sent the sms
-      or made the call, and also what is the Twilio number that triggered this request.
+      includes some useful information including: 
+      * the `From` number that originally called or sent an SMS
+      * the `To` Twilio number that triggered this request
+
       Take a look at [Twilio's SMS
       Documentation](https://www.twilio.com/docs/api/twiml/sms/twilio_request#request-parameters)
       and [Twilio's Voice
@@ -116,8 +118,8 @@
       response to the message.
 
       If the initial message sent to the anonymous number was sent by the host, 
-      we forward it on to the guest. We forward it
-      to the host if the original message was sent by the guest.
+      we forward it on to the guest. Conversely, if the original message was sent by the guest, we forward it
+      to the host.
 
       ---
 
