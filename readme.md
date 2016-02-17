@@ -3,6 +3,8 @@
 
 Protect your customers' privacy, and create a seamless interaction by provisioning Twilio numbers on the fly, and routing all voice calls, and messages through your very own 3rd party. This allows you to control the interaction between your customers, while putting your customer's privacy first.
 
+[Read the full tutorial here](https://www.twilio.com/docs/tutorials/walkthrough/masked-numbers/php/laravel)!
+
 ### Create a TwiML App
 
 This project is configured to use a **TwiML App**, which allows us to easily set the voice URLs for all Twilio phone numbers we purchase in this app.
