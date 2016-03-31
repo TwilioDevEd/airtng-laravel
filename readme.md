@@ -6,7 +6,7 @@ Learn how to automate your workflow using Twilio's REST API and Twilio SMS. This
 
 [Read the full tutorial here](https://www.twilio.com/docs/tutorials/walkthrough/workflow-automation/php/laravel)!
 
-### Run the application
+## Run the application
 
 1. Clone the repository and `cd` into it.
 
@@ -114,12 +114,12 @@ Learn how to automate your workflow using Twilio's REST API and Twilio SMS. This
   $ php artisan serve --host=127.0.0.1
   ```
 
-### Dependencies
+## Dependencies
 
 This application uses this Twilio helper library:
 * [twilio-php](https://github.com/twilio/twilio-php)
 
-### Run the tests
+## Run the tests
 
 1. Run at the top-level directory.
 
@@ -130,3 +130,9 @@ This application uses this Twilio helper library:
    If you don't have phpunit installed on your system, you can follow [these
    instructions](https://phpunit.de/manual/current/en/installation.html) to
    install it.
+
+## Meta
+
+* No warranty expressed or implied. Software is as is. Diggity.
+* [MIT License](http://www.opensource.org/licenses/mit-license.html)
+* Lovingly crafted by Twilio Developer Education.
