@@ -8,8 +8,8 @@ use App\Reservation;
 use App\User;
 use App\VacationProperty;
 use DB;
-use Services_Twilio as TwilioRestClient;
-use Services_Twilio_Twiml as TwilioTwiml;
+use Twilio\Rest\Client;
+use Twilio\Twiml;
 use Log;
 
 class ReservationController extends Controller
@@ -17,13 +17,18 @@ class ReservationController extends Controller
     public function index(Authenticatable $user)
     {
         $reservations = array();
+
         foreach ($user->propertyReservations as $reservation)
         {
             array_push($reservations, $reservation->fresh());
         }
-        return view('reservation.index',
-                    ['hostReservations' => $reservations,
-                     'guestReservations' => $user->reservations]);
+        return view(
+            'reservation.index',
+            [
+                'hostReservations' => $reservations,
+                'guestReservations' => $user->reservations
+            ]
+        );
     }
 
     /**
@@ -32,7 +37,7 @@ class ReservationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create(TwilioRestClient $client, Request $request, Authenticatable $user, $id)
+    public function create(Client $client, Request $request, Authenticatable $user, $id)
     {
         $this->validate(
             $request, [
@@ -55,13 +60,14 @@ class ReservationController extends Controller
         return redirect()->route('reservation-index', ['id' => $property->id]);
     }
 
-    public function acceptReject(TwilioRestClient $client, Request $request)
+    public function acceptReject(Client $client, Request $request)
     {
         $hostNumber = $request->input('From');
         $smsInput = strtolower($request->input('Body'));
         $host = User::where(DB::raw("CONCAT('+',country_code::text, phone_number::text)"), 'LIKE', "%".$hostNumber."%")
-                    ->get()
-                    ->first();
+            ->get()
+            ->first();
+
         $reservation = $host->pendingReservations()->first();
         $smsResponse = null;
         if (!is_null($reservation))
@@ -137,7 +143,7 @@ class ReservationController extends Controller
 
     private function connectVoiceResponse($outgoingNumber)
     {
-        $response = new TwilioTwiml;
+        $response = new Twiml();
         $response->play('http://howtodocs.s3.amazonaws.com/howdy-tng.mp3');
         $response->dial($outgoingNumber);
 
@@ -146,7 +152,7 @@ class ReservationController extends Controller
 
     private function connectSmsResponse($messageBody, $outgoingNumber)
     {
-        $response = new TwilioTwiml;
+        $response = new Twiml();
         $response->message(
             $messageBody,
             ['to' => $outgoingNumber]
@@ -157,7 +163,7 @@ class ReservationController extends Controller
 
     private function respond($smsResponse, $reservation)
     {
-        $response = new TwilioTwiml;
+        $response = new Twiml();
         $response->message($smsResponse);
 
         if (!is_null($reservation))
@@ -179,10 +185,12 @@ class ReservationController extends Controller
         $messageBody = $reservation->message . ' - Reply \'yes\' or \'accept\' to confirm the reservation, or anything else to reject it.';
 
         try {
-            $client->account->messages->sendMessage(
-                $twilioNumber, // From a Twilio number in your account
+            $client->messages->create(
                 $host->fullNumber(), // Text any number
-                $messageBody
+                [
+                    'from' => $twilioNumber, // From a Twilio number in your account
+                    'body' => $messageBody
+                ]
             );
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -191,32 +199,35 @@ class ReservationController extends Controller
 
     private function getNewTwilioNumber($client, $host)
     {
-        $numbers = $client->account->available_phone_numbers->getList('US', 'Local', array(
-            "AreaCode" => $host->areaCode(),
-            "VoiceEnabled" => "true",
-            "SmsEnabled" => "true"
-        ));
-        if (empty($numbers))
-        {
-            $numbers = $client->account->available_phone_numbers->getList('US', 'Local', array(
-                "VoiceEnabled" => "true",
-                "SmsEnabled" => "true"
-            ));
+        $numbers = $client->availablePhoneNumbers('US')->local->read(
+            [
+                'areaCode' => $host->areaCode(),
+                'voiceEnabled' => 'true',
+                "smsEnabled" => 'true'
+            ]
+        );
+
+        if (empty($numbers)) {
+            $numbers = $client->availablePhoneNumbers('US')->local->read(
+                [
+                    'voiceEnabled' => 'true',
+                    "smsEnabled" => 'true'
+                ]
+            );
         }
-        $twilioNumber = $numbers->available_phone_numbers[0]->phone_number;
+        $twilioNumber = $numbers[0]->phoneNumber;
 
-        $numberSid = $client->account->incoming_phone_numbers->create(array(
-            "PhoneNumber" => $twilioNumber,
-            "SmsApplicationSid" => config('services.twilio')['applicationSid'],
-            "VoiceApplicationSid" => config('services.twilio')['applicationSid']
-        ));
+        $newNumber = $client->incomingPhoneNumbers->create(
+            [
+                "phoneNumber" => $twilioNumber,
+                "smsApplicationSid" => config('services.twilio')['applicationSid'],
+                "voiceApplicationSid" => config('services.twilio')['applicationSid']
+            ]
+        );
 
-        if ($numberSid)
-        {
+        if ($newNumber) {
             return $twilioNumber;
-        }
-        else
-        {
+        } else {
             return 0;
         }
     }
