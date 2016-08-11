@@ -8,8 +8,8 @@ use App\Reservation;
 use App\User;
 use App\VacationProperty;
 use DB;
-use Services_Twilio as TwilioRestClient;
-use Services_Twilio_Twiml as TwilioTwiml;
+use Twilio\Rest\Client;
+use Twilio\Twiml;
 
 class ReservationController extends Controller
 {
@@ -19,7 +19,7 @@ class ReservationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create(TwilioRestClient $client, Request $request, Authenticatable $user, $id)
+    public function create(Client $client, Request $request, Authenticatable $user, $id)
     {
         $this->validate(
             $request, [
@@ -74,7 +74,7 @@ class ReservationController extends Controller
 
     private function respond($smsResponse, $reservation)
     {
-        $response = new TwilioTwiml;
+        $response = new Twiml();
         $response->message($smsResponse);
 
         if (!is_null($reservation))
@@ -92,12 +92,15 @@ class ReservationController extends Controller
         $host = $reservation->property->user;
 
         $twilioNumber = config('services.twilio')['number'];
+        $messageBody = $reservation->message . ' - Reply \'yes\' or \'accept\' to confirm the reservation, or anything else to reject it.';
 
         try {
-            $client->account->messages->sendMessage(
-                $twilioNumber, // From a Twilio number in your account
+            $client->messages->create(
                 $host->fullNumber(), // Text any number
-                $reservation->message
+                [
+                    'from' => $twilioNumber, // From a Twilio number in your account
+                    'body' => $messageBody
+                ]
             );
         } catch (Exception $e) {
             Log::error($e->getMessage());

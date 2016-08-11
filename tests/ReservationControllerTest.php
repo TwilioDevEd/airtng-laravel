@@ -5,6 +5,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\VacationProperty;
 use App\Reservation;
 use App\User;
+use Twilio\Rest\Client;
 
 class ReservationControllerTest extends TestCase
 {
@@ -33,22 +34,27 @@ class ReservationControllerTest extends TestCase
         $newUser->properties()->save($newProperty);
         $this->assertCount(0, Reservation::all());
 
-        $mockTwilioService = Mockery::mock('Services_Twilio')
-                                ->makePartial();
-        $mockTwilioAccount = Mockery::mock();
+        $mockTwilioClient = Mockery::mock(Client::class)
+            ->makePartial();
         $mockTwilioMessages = Mockery::mock();
-        $mockTwilioAccount->messages = $mockTwilioMessages;
-        $mockTwilioService->account = $mockTwilioAccount;
+
+        $mockTwilioClient->messages = $mockTwilioMessages;
 
         $twilioNumber = config('services.twilio')['number'];
         $mockTwilioMessages
-            ->shouldReceive('sendMessage')
-            ->with($twilioNumber, $newUser->fullNumber(), 'Some reservation message')
+            ->shouldReceive('create')
+            ->with(
+                $newUser->fullNumber(),
+                [
+                    'from' => $twilioNumber,
+                    'body' => 'Some reservation message - Reply \'yes\' or \'accept\' to confirm the reservation, or anything else to reject it.'
+                ]
+            )
             ->once();
 
         $this->app->instance(
-            'Services_Twilio',
-            $mockTwilioService
+            Client::class,
+            $mockTwilioClient
         );
 
         // When
