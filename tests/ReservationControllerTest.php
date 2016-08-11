@@ -5,6 +5,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\VacationProperty;
 use App\Reservation;
 use App\User;
+use Twilio\Rest\Client;
 
 class ReservationControllerTest extends TestCase
 {
@@ -40,29 +41,32 @@ class ReservationControllerTest extends TestCase
             'description' => 'Some description',
             'image_url' => 'http://www.someimage.com'
         ];
+
         $newProperty = new VacationProperty($propertyData);
         $newUser->properties()->save($newProperty);
         $this->assertCount(0, Reservation::all());
 
-        $mockTwilioService = Mockery::mock('Services_Twilio')
-                                ->makePartial();
-        $mockTwilioAccount = Mockery::mock();
+        $mockTwilioClient = Mockery::mock(Client::class)
+            ->makePartial();
         $mockTwilioMessages = Mockery::mock();
-        $mockTwilioAccount->messages = $mockTwilioMessages;
-        $mockTwilioService->account = $mockTwilioAccount;
+
+        $mockTwilioClient->messages = $mockTwilioMessages;
 
         $twilioNumber = config('services.twilio')['number'];
         $mockTwilioMessages
-            ->shouldReceive('sendMessage')
-            ->with($twilioNumber,
-                   $newUser->fullNumber(),
-                   'Some reservation message - Reply \'yes\' or \'accept\' to confirm the reservation, or anything else to reject it.'
+            ->shouldReceive('create')
+            ->with(
+                $newUser->fullNumber(),
+                [
+                    'from' => $twilioNumber,
+                    'body' => 'Some reservation message - Reply \'yes\' or \'accept\' to confirm the reservation, or anything else to reject it.'
+                ]
             )
             ->once();
 
         $this->app->instance(
-            'Services_Twilio',
-            $mockTwilioService
+            Client::class,
+            $mockTwilioClient
         );
 
         // When
@@ -133,52 +137,59 @@ class ReservationControllerTest extends TestCase
         $reservation = $reservation->fresh();
         $this->assertEquals('pending', $reservation->status);
 
-        $mockTwilioService = Mockery::mock('Services_Twilio')
-                                ->makePartial();
-        $mockTwilioAccount = Mockery::mock();
-        $mockTwilioAvailablePhoneNumbers = Mockery::mock();
-        $mockTwilioAccount->available_phone_numbers = $mockTwilioAvailablePhoneNumbers;
-        $mockTwilioService->account = $mockTwilioAccount;
-        $availableNumber = Mockery::mock();
-        $availableNumber->phone_number = '+15551112222';
-        $availableNumbers = Mockery::mock();
-        $availableNumbers->available_phone_numbers = array($availableNumber);
-
+        $mockTwilioClient = Mockery::mock(Client::class)->makePartial();
         $mockTwilioIncomingPhoneNumbers = Mockery::mock();
-        $mockTwilioAccount->incoming_phone_numbers = $mockTwilioIncomingPhoneNumbers;
+        $localNumbers = Mockery::mock();
+        $mockTwilioAvailablePhoneNumbers = Mockery::mock();
+        $mockTwilioAvailablePhoneNumbers->local = $localNumbers;
+        $availableNumber = Mockery::mock();
+        $availableNumber->phoneNumber = '+15551112222';
+        $availableNumbers = array($availableNumber);
 
-        $twilioNumber = config('services.twilio')['number'];
-        $mockTwilioAvailablePhoneNumbers
-            ->shouldReceive('getList')
-            ->with('US', 'Local', array(
-                "AreaCode" => $newUser->areaCode(),
-                "VoiceEnabled" => "true",
-                "SmsEnabled" => "true"
-            ))
+        $mockTwilioClient->incomingPhoneNumbers = $mockTwilioIncomingPhoneNumbers;
+
+        $mockTwilioClient
+            ->shouldReceive('availablePhoneNumbers')
+            ->with('US')
             ->once()
+            ->andReturn($mockTwilioAvailablePhoneNumbers);
+
+        $localNumbers
+            ->shouldReceive('read')
+            ->with(
+                [
+                    'areaCode' => $newUser->areaCode(),
+                    'voiceEnabled' => 'true',
+                    "smsEnabled" => 'true'
+                ]
+            )
             ->andReturn($availableNumbers);
 
         $mockTwilioIncomingPhoneNumbers
             ->shouldReceive('create')
-            ->with(array(
-                "PhoneNumber" => "+15551112222",
-                "SmsApplicationSid" => config('services.twilio')['applicationSid'],
-                "VoiceApplicationSid" => config('services.twilio')['applicationSid']
-            ))
+            ->with(
+                [
+                    "phoneNumber" => "+15551112222",
+                    "smsApplicationSid" => config('services.twilio')['applicationSid'],
+                    "voiceApplicationSid" => config('services.twilio')['applicationSid']
+                ]
+            )
             ->once()
-            ->andReturn('Some SID');
+            ->andReturn(Mockery::mock());
 
         $this->app->instance(
-            'Services_Twilio',
-            $mockTwilioService
+            Client::class,
+            $mockTwilioClient
         );
 
         // When
         $response = $this->call(
             'POST',
             route('reservation-incoming'),
-            ['From' => '+15558180101',
-             'Body' => 'yes']
+            [
+                'From' => '+15558180101',
+                'Body' => 'yes'
+            ]
         );
         //echo $response;
         $messageDocument = new SimpleXMLElement($response->getContent());
@@ -241,8 +252,10 @@ class ReservationControllerTest extends TestCase
         $response = $this->call(
             'POST',
             route('reservation-incoming'),
-            ['From' => '+15558180101',
-             'Body' => 'any other string']
+            [
+                'From' => '+15558180101',
+                'Body' => 'any other string'
+            ]
         );
         //echo $response;
         $messageDocument = new SimpleXMLElement($response->getContent());
@@ -306,8 +319,10 @@ class ReservationControllerTest extends TestCase
         $response = $this->call(
             'POST',
             route('reservation-incoming'),
-            ['From' => '+15558180101',
-             'Body' => 'yes']
+            [
+                'From' => '+15558180101',
+                'Body' => 'yes'
+            ]
         );
         $messageDocument = new SimpleXMLElement($response->getContent());
 
@@ -366,9 +381,11 @@ class ReservationControllerTest extends TestCase
         $response = $this->call(
             'GET',
             route('reservation-connect-sms'),
-            ['To' => '+15551112222',
-             'From' => '+15558180101',
-             'Body' => 'Some Message']
+            [
+                'To' => '+15551112222',
+                'From' => '+15558180101',
+                'Body' => 'Some Message'
+            ]
         );
         $messageDocument = new SimpleXMLElement($response->getContent());
 
@@ -426,8 +443,10 @@ class ReservationControllerTest extends TestCase
         $response = $this->call(
             'GET',
             route('reservation-connect-voice'),
-            ['To' => '+15551112222',
-             'From' => '+15558180101']
+            [
+                'To' => '+15551112222',
+                'From' => '+15558180101'
+            ]
         );
         $messageDocument = new SimpleXMLElement($response->getContent());
 
