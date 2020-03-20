@@ -69,8 +69,8 @@ class ReservationControllerTest extends TestCase
         $this->assertCount(1, Reservation::all());
         $reservation = Reservation::first();
         $this->assertEquals($reservation->message, 'Some reservation message');
-        $this->assertRedirectedToRoute('property-show', ['id' => $newProperty->id]);
-        $this->assertSessionHas('status');
+        $response->assertRedirect(route('property-show', ['id' => $newProperty->id]));
+        $response->assertSessionHas('status');
         $flashreservation = $this->app['session']->get('status');
         $this->assertEquals(
             $flashreservation,
@@ -127,12 +127,14 @@ class ReservationControllerTest extends TestCase
             'POST',
             route('reservation-incoming'),
             ['From' => '+15558180101',
-             'Body' => 'yes']
+             'Body' => 'accept']
         );
+        
         $messageDocument = new SimpleXMLElement($response->getContent());
-
+        
         $reservation = $reservation->fresh();
         $this->assertEquals('confirmed', $reservation->status);
+        $this->assertEquals($response->getStatusCode(), 200);
         $this->assertNotNull(strval($messageDocument->Message[0]));
         $this->assertNotEmpty(strval($messageDocument->Message[0]));
         $this->assertEquals(strval($messageDocument->Message[0]), 'You have successfully confirmed the reservation.');
@@ -197,6 +199,7 @@ class ReservationControllerTest extends TestCase
 
         $reservation = $reservation->fresh();
         $this->assertEquals('rejected', $reservation->status);
+        $this->assertEquals($response->getStatusCode(), 200);
         $this->assertNotNull(strval($messageDocument->Message[0]));
         $this->assertNotEmpty(strval($messageDocument->Message[0]));
         $this->assertEquals(strval($messageDocument->Message[0]), 'You have successfully rejected the reservation.');
@@ -262,6 +265,7 @@ class ReservationControllerTest extends TestCase
 
         $reservation = $reservation->fresh();
         $this->assertEquals('confirmed', $reservation->status);
+        $this->assertEquals($response->getStatusCode(), 200);
         $this->assertNotNull(strval($messageDocument->Message[0]));
         $this->assertNotEmpty(strval($messageDocument->Message[0]));
         $this->assertEquals(strval($messageDocument->Message[0]), 'Sorry, it looks like you don\'t have any reservations to respond to.');

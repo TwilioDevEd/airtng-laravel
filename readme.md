@@ -17,14 +17,13 @@ Learn how to automate your workflow using Twilio's REST API and Twilio SMS. This
    ```bash
    $ composer install
    ```
-1. The application uses PostgreSQL as the persistence layer. If you
-  don't have it already, you should install it. The easiest way is by
-  using [Postgres.app](http://postgresapp.com/).
+1. The application uses [sqlite3](https://www.sqlite.org/) as the persistence layer. If you
+  don't have it already, you should install it.
 
-1. Create a database.
+1. Create an empty database file.
 
   ```bash
-  $ createdb airtng
+  $ touch database/database.sqlite
   ```
 
 1. Copy the sample configuration file and edit it to match your configuration.
@@ -85,7 +84,7 @@ Learn how to automate your workflow using Twilio's REST API and Twilio SMS. This
  Remember that the number where you change the sms webhooks must be the same one you set on
  the `TWILIO_NUMBER` environment variable.
 
- ![Configure Voice](http://howtodocs.s3.amazonaws.com/twilio-number-config-all-med.gif)
+ ![Configure Messaging](webhook.png)
 
  For this application, you must set the voice webhook of your number so that it
  looks something like this:
@@ -123,10 +122,28 @@ This application uses this Twilio helper library:
 
 ## Run the tests
 
+1. Create an empty database file.
+
+  ```bash
+  $ touch database/database-test.sqlite
+  ```
+
+1. Run the migrations.
+
+  ```bash
+  $ php artisan migrate --database=testing
+  ```
+
 1. Run at the top-level directory.
 
    ```bash
    $ phpunit
+   ```
+
+   or
+
+   ```bash
+   $ vendor/bin/phpunit
    ```
 
    If you don't have phpunit installed on your system, you can follow [these
@@ -136,5 +153,6 @@ This application uses this Twilio helper library:
 ## Meta
 
 * No warranty expressed or implied. Software is as is. Diggity.
+* The CodeExchange repository can be found [here](https://github.com/twilio-labs/code-exchange/).
 * [MIT License](http://www.opensource.org/licenses/mit-license.html)
 * Lovingly crafted by Twilio Developer Education.

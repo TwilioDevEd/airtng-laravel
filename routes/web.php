@@ -2,16 +2,15 @@
 
 /*
 |--------------------------------------------------------------------------
-| Application Routes
+| Web Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the controller to call when that URI is requested.
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
 |
 */
 
-//Home related routes
 Route::get(
     '/', ['as' => 'home', function () {
         return response()->view('home');
@@ -20,13 +19,15 @@ Route::get(
 
 // Session related routes
 Route::get(
-    '/auth/login', ['as' => 'login-index', function() {
+    '/auth/login',
+    ['as' => 'login-index', function () {
         return response()->view('login');
     }]
 );
 
 Route::get(
-    '/login', ['as' => 'login-index', function() {
+    '/login',
+    ['as' => 'login-index', function () {
         return response()->view('login');
     }]
 );
@@ -37,7 +38,8 @@ Route::post(
 );
 
 Route::get(
-    '/logout', ['as' => 'logout', function() {
+    '/logout',
+    ['as' => 'logout', function () {
         Auth::logout();
         return redirect()->route('home');
     }]
@@ -45,7 +47,8 @@ Route::get(
 
 // User related routes
 Route::get(
-    '/user/new', ['as' => 'user-new', function() {
+    '/user/new',
+    ['as' => 'user-new', function () {
         return response()->view('newUser');
     }]
 );
@@ -60,7 +63,7 @@ Route::get(
     '/property/new',
     ['as' => 'property-new',
      'middleware' => 'auth',
-     function() {
+     function () {
          return response()->view('property.newProperty');
      }]
 );

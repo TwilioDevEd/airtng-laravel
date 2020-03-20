@@ -42,8 +42,8 @@ class VacationPropertyControllerTest extends TestCase
         $property = VacationProperty::first();
         $this->assertEquals($property->description, $validDescription);
         $this->assertEquals($property->image_url, $validImageUrl);
-        $this->assertRedirectedToRoute('property-index');
-        $this->assertSessionHas('status');
+        $response->assertRedirect(route('property-index'));
+        $response->assertSessionHas('status');
         $flashMessage = $this->app['session']->get('status');
         $this->assertEquals(
             $flashMessage,
@@ -88,6 +88,6 @@ class VacationPropertyControllerTest extends TestCase
         $property = VacationProperty::first();
         $this->assertEquals($property->description, 'edited description');
         $this->assertEquals($property->image_url, 'http://www.modified.net');
-        $this->assertRedirectedToRoute('property-show', ['id' => $property->id]);
+        $response->assertRedirect(route('property-show', ['id' => $property->id]));
     }
 }
