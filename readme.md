@@ -1,6 +1,7 @@
 # Airtng App: Part 1 - Workflow Automation with Twilio - Laravel
 
-[![Build Status](https://travis-ci.org/TwilioDevEd/airtng-laravel.svg)](https://travis-ci.org/TwilioDevEd/airtng-laravel)
+![](https://github.com/TwilioDevEd/airtng-laravel/workflows/Laravel/badge.svg)
+
 
 > We are currently in the process of updating this sample template. If you are encountering any issues with the sample, please open an issue at [github.com/twilio-labs/code-exchange/issues](https://github.com/twilio-labs/code-exchange/issues) and we'll try to help you.
 
