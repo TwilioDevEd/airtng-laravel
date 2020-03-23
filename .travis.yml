@@ -1,7 +1,6 @@
 language: php
 php:
-- 5.5
-- 7.0
+- 7.3
 install:
 - composer install
 env:
@@ -15,5 +14,5 @@ env:
   - TWILIO_AUTH_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   - TWILIO_NUMBER=+15552737123
 before_script:
-  - psql -c 'create database airtng;' -U postgres
-  - php artisan migrate
+  - touch database/database-test.sqlite
+  - php artisan migrate  --database=testing --force
