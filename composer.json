@@ -1,5 +1,5 @@
 {
-    "name": "TwilioDevEd/airtng-laravel",
+    "name": "twilio-deved/airtng-laravel",
     "description": "The Laravel Framework.",
     "keywords": ["twilio", "workflow", "airtng"],
     "license": "MIT",

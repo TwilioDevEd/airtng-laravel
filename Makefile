@@ -1,11 +1,9 @@
 install:
-	mkdir -p database
 	touch database/database.sqlite
 	touch database/database-test.sqlite
 	composer install
 	php artisan key:generate --force
 	php artisan migrate --force
-	php artisan db:seed --force
 
 serve-setup:
 	php artisan serve --host=127.0.0.1
