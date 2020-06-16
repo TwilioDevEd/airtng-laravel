@@ -17,11 +17,16 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
-    - uses: shivammathur/setup-php@v2
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 7.4
+        extensions: mbstring, fileinfo, pdo_sqlite
+        coverage: none
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+      run: composer install
     - name: Generate key
       run: php artisan key:generate --force
     - name: Directory Permissions
