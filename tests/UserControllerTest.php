@@ -1,4 +1,6 @@
 <?php
+namespace Tests;
+
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -37,8 +39,8 @@ class UserControllerTest extends TestCase
         $this->assertEquals($user->email, $validEmail);
         $this->assertEquals($user->country_code, $validCountryCode);
         $this->assertEquals($user->phone_number, $validPhoneNumber);
-        $this->assertRedirectedToRoute('home');
-        $this->assertSessionHas('status');
+        $response->assertRedirect(route('home'));
+        $response->assertSessionHas('status');
         $flashMessage = $this->app['session']->get('status');
         $this->assertEquals(
             $flashMessage,

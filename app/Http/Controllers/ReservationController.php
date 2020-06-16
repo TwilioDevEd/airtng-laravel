@@ -7,9 +7,8 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use App\Reservation;
 use App\User;
 use App\VacationProperty;
-use DB;
 use Twilio\Rest\Client;
-use Twilio\Twiml;
+use Twilio\TwiML\MessagingResponse;
 
 class ReservationController extends Controller
 {
@@ -46,11 +45,12 @@ class ReservationController extends Controller
     {
         $hostNumber = $request->input('From');
         $smsInput = strtolower($request->input('Body'));
-        $host = User::where(DB::raw("CONCAT('+',country_code::text, phone_number::text)"), 'LIKE', "%".$hostNumber."%")
-                    ->get()
-                    ->first();
+
+        $host = User::getUsersByFullNumber($hostNumber)->first();
         $reservation = $host->pendingReservations()->first();
+        
         $smsResponse = null;
+
         if (!is_null($reservation))
         {
             if (strpos($smsInput, 'yes') !== false || strpos($smsInput, 'accept') !== false)
@@ -74,7 +74,7 @@ class ReservationController extends Controller
 
     private function respond($smsResponse, $reservation)
     {
-        $response = new Twiml();
+        $response = new MessagingResponse();
         $response->message($smsResponse);
 
         if (!is_null($reservation))
