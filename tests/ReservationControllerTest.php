@@ -1,4 +1,6 @@
 <?php
+namespace Tests;
+
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -6,6 +8,8 @@ use App\VacationProperty;
 use App\Reservation;
 use App\User;
 use Twilio\Rest\Client;
+use Mockery;
+use SimpleXMLElement;
 
 class ReservationControllerTest extends TestCase
 {

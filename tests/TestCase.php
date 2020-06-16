@@ -1,7 +1,13 @@
 <?php
+namespace Tests;
 
-class TestCase extends Illuminate\Foundation\Testing\TestCase
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+
+class TestCase extends BaseTestCase
 {
+    use DatabaseMigrations;
     /**
      * The base URL to use while testing the application.
      *
@@ -18,20 +24,8 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
     {
         $app = require __DIR__.'/../bootstrap/app.php';
 
-        $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+        $app->make(Kernel::class)->bootstrap();
 
         return $app;
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        Artisan::call('migrate');
-    }
-
-    protected function tearDown(): void
-    {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
     }
 }
