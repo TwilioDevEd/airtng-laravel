@@ -9,10 +9,15 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      max-parallel: 3
+      matrix:
+        platform: [windows-latest, macos-latest, ubuntu-latest]
     
     steps:
     - uses: actions/checkout@v2
+    - uses: shivammathur/setup-php@v2
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Install Dependencies
@@ -22,9 +27,7 @@ jobs:
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Database
-      run: |
-        mkdir -p database
-        touch database/database-test.sqlite
+      run: touch database/database-test.sqlite
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       env:
         DB_CONNECTION: sqlite

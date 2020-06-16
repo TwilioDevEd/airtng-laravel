@@ -7,7 +7,6 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use App\Reservation;
 use App\User;
 use App\VacationProperty;
-use DB;
 use Twilio\Rest\Client;
 use Twilio\TwiML\MessagingResponse;
 
@@ -47,17 +46,7 @@ class ReservationController extends Controller
         $hostNumber = $request->input('From');
         $smsInput = strtolower($request->input('Body'));
 
-        $connection = config('database.default');
-        $driver = config("database.connections.{$connection}.driver");
-        if ($driver === 'sqlite') {
-            $concat_string = DB::raw("'+' || country_code || phone_number");
-        } else {
-            $concat_string = DB::raw("CONCAT('+',country_code::text, phone_number::text)");
-        }
-
-        $host = User::where($concat_string, 'LIKE', "%".$hostNumber."%")
-        ->get()
-        ->first();
+        $host = User::getUsersByFullNumber($hostNumber)->first();
         $reservation = $host->pendingReservations()->first();
         
         $smsResponse = null;

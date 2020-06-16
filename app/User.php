@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use DB;
 
 class User extends Model implements AuthenticatableContract,
                                     AuthorizableContract,
@@ -63,5 +64,18 @@ class User extends Model implements AuthenticatableContract,
     public function fullNumber()
     {
         return '+' . $this->country_code . $this->phone_number;
+    }
+    
+    public static function getUsersByFullNumber($number)
+    {
+        $connection = config('database.default');
+        $driver = config("database.connections.{$connection}.driver");
+        if ($driver === 'sqlite') {
+            $concat_string = DB::raw("'+' || country_code || phone_number");
+        } else {
+            $concat_string = DB::raw("CONCAT('+',country_code::text, phone_number::text)");
+        }
+
+        return self::where($concat_string, 'LIKE', "%".$number."%")->get();
     }
 }
