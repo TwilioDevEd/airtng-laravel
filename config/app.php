@@ -222,4 +222,17 @@ return [
 
     ],
 
+    'debug_hide' => [
+        '_ENV' => [
+            'APP_KEY',
+            'TWILIO_ACCOUNT_SID',
+            'TWILIO_AUTH_TOKEN',
+        ],
+
+        '_SERVER' => [
+            'APP_KEY',
+            'TWILIO_ACCOUNT_SID',
+            'TWILIO_AUTH_TOKEN',
+        ],
+    ],
 ];

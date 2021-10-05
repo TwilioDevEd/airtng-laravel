@@ -50,12 +50,6 @@ After the above requirements have been met:
     cd airtng-laravel
     ```
 
-1. Install PHP dependencies
-
-    ```bash
-    make install
-    ```
-
 1. Set your environment variables
 
     ```bash
@@ -63,6 +57,12 @@ After the above requirements have been met:
     ```
 
     See [Twilio Account Settings](#twilio-account-settings) to locate the necessary environment variables.
+
+1. Install PHP dependencies
+
+    ```bash
+    make install
+    ```
 
 1. Expose the application to the wider Internet using [ngrok](https://ngrok.com/)
 
