@@ -25,7 +25,7 @@ If you don't have a Twilio phone number yet, you can purchase a new number in yo
 1. Install the application's dependencies with [Composer](https://getcomposer.org/)
 
    ```bash
-   $ composer install
+   composer install
    ```
 
 1. The application uses PostgreSQL as the persistence layer. If you
@@ -35,13 +35,13 @@ If you don't have a Twilio phone number yet, you can purchase a new number in yo
 1. Create a database.
 
   ```bash
-  $ createdb airtng
+  createdb airtng
   ```
 
 1. Copy the sample configuration file and edit it to match your configuration.
 
    ```bash
-   $ cp .env.example .env
+   cp .env.example .env
    ```
 
   You can find your `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` under
@@ -54,24 +54,24 @@ If you don't have a Twilio phone number yet, you can purchase a new number in yo
 1. Generate an `APP_KEY`.
 
    ```bash
-   $ php artisan key:generate
+   php artisan key:generate
    ```
 1. Run the migrations.
 
   ```bash
-  $ php artisan migrate
+  php artisan migrate
   ```
 
 1. Load the seed data.
 
   ```bash
-  $ php artisan db:seed
+  php artisan db:seed
   ```
 
 1. Expose the application to the wider Internet using [ngrok](https://ngrok.com/)
 
    ```bash
-   $ ngrok http 8000
+   ngrok http 8000
    ```
 
    Once you have started ngrok, update your TwiML app's voice and SMS URL
@@ -112,7 +112,7 @@ If you don't have a Twilio phone number yet, you can purchase a new number in yo
 1. Run the application using Artisan.
 
   ```bash
-  $ php artisan serve
+  php artisan serve
   ```
 
   It is `artisan serve` default behaviour to use `http://localhost:8000` when
@@ -126,7 +126,7 @@ If you don't have a Twilio phone number yet, you can purchase a new number in yo
   address, like this:
 
   ```bash
-  $ php artisan serve --host=127.0.0.1
+  php artisan serve
   ```
 
 ### Dependencies
@@ -139,7 +139,7 @@ This application uses this Twilio helper library:
 1. Run at the top-level directory.
 
    ```bash
-   $ phpunit
+   phpunit
    ```
 
    If you don't have phpunit installed on your system, you can follow [this
