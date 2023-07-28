@@ -9,7 +9,7 @@
         "fideloper/proxy": "^4.2",
         "laravel/framework": "^8.17",
         "laravel/tinker": "^2.3",
-        "twilio/sdk": "^6.1.0",
+        "twilio/sdk": "^7.7.1",
         "laravelcollective/html": "^6.1"
     },
     "require-dev": {
